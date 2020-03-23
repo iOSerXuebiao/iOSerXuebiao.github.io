@@ -8,15 +8,15 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>六大设计原则 | X的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="1、单一职责原则单一职责原则的英文名称是Single Responsibility Principle ，简称SRP。这个设计原则备受争议，只要你想和别人争执、怄气或者是吵架，这个原则是屡试不爽的。 定义：There should never be more than one reason for a class to change.     应该有且仅有一个原因引起类的变更。 理解：不同的类具备">
+  <meta name="description" content="1、单一职责原则">
 <meta name="keywords" content="设计原则">
 <meta property="og:type" content="article">
 <meta property="og:title" content="六大设计原则">
 <meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12-06-15:11:26&#x2F;index.html">
 <meta property="og:site_name" content="X的博客">
-<meta property="og:description" content="1、单一职责原则单一职责原则的英文名称是Single Responsibility Principle ，简称SRP。这个设计原则备受争议，只要你想和别人争执、怄气或者是吵架，这个原则是屡试不爽的。 定义：There should never be more than one reason for a class to change.     应该有且仅有一个原因引起类的变更。 理解：不同的类具备">
+<meta property="og:description" content="1、单一职责原则">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-12-06T10:53:27.921Z">
+<meta property="og:updated_time" content="2020-03-23T06:57:53.020Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="X的博客" type="application/atom+xml">
@@ -61,6 +61,8 @@
 				<li><a href="/tags/%E9%9A%8F%E7%AC%94/">随笔</a></li>
 	        
 				<li><a href="/tags/iOS/">iOS</a></li>
+	        
+				<li><a href="/categories/%E7%BC%96%E7%A8%8B%E6%80%9D%E6%83%B3">编程思想</a></li>
 	        
 			</ul>
 		</nav>
@@ -120,6 +122,8 @@
 			
 				
 			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -140,11 +144,13 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 33.333333333333336%"><a href="/">主页</a></li>
+					<li style="width: 25%"><a href="/">主页</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags/%E9%9A%8F%E7%AC%94/">随笔</a></li>
+					<li style="width: 25%"><a href="/tags/%E9%9A%8F%E7%AC%94/">随笔</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags/iOS/">iOS</a></li>
+					<li style="width: 25%"><a href="/tags/iOS/">iOS</a></li>
+		        
+					<li style="width: 25%"><a href="/categories/%E7%BC%96%E7%A8%8B%E6%80%9D%E6%83%B3">编程思想</a></li>
 		        
 				</ul>
 			</nav>
@@ -179,7 +185,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="1、单一职责原则"><a href="#1、单一职责原则" class="headerlink" title="1、单一职责原则"></a>1、单一职责原则</h2><p>单一职责原则的英文名称是Single Responsibility Principle ，简称SRP。这个设计原则备受争议，只要你想和别人争执、怄气或者是吵架，这个原则是屡试不爽的。</p>
+        <h2 id="1、单一职责原则"><a href="#1、单一职责原则" class="headerlink" title="1、单一职责原则"></a>1、单一职责原则</h2><a id="more"></a>
+<p>单一职责原则的英文名称是Single Responsibility Principle ，简称SRP。这个设计原则备受争议，只要你想和别人争执、怄气或者是吵架，这个原则是屡试不爽的。</p>
 <p>定义：There should never be more than one reason for a class to change.<br>     应该有且仅有一个原因引起类的变更。</p>
 <p>理解：不同的类具备不同的职责，各司其职。做系统设计时，如果发现有一个类拥有了两种职责，那么就要问一个问题：可以将这个类分成两个类吗？如果真的有必要，那就分开，千万不要让一个类干的事情太多。</p>
 <p>优点：类的复杂性降低，实现什么职责都有清晰明确的定义；可读性提高，复杂性降低，那当然可读性提高了；可维护性提高，可读性提高，那当然更容易维护了；变更引起的风险降低，变更是必不可少的，如果接口的单一职责做得好，一个接口修改只对相应的实现类有影响，对其他的接口无影响，这对系统的扩展性、维护性都有非常大的帮助。</p>
@@ -255,6 +262,17 @@
 	</div>
 
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/编程思想//" class="article-tag-list-link color5">编程思想</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
 
@@ -349,6 +367,19 @@
         </div>
         
         
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1、单一职责原则"><span class="toc-number">1.</span> <span class="toc-text">1、单一职责原则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2、里氏替换原则"><span class="toc-number">2.</span> <span class="toc-text">2、里氏替换原则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3、依赖倒置原则"><span class="toc-number">3.</span> <span class="toc-text">3、依赖倒置原则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4、接口隔离原则"><span class="toc-number">4.</span> <span class="toc-text">4、接口隔离原则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5、迪米特法则"><span class="toc-number">5.</span> <span class="toc-text">5、迪米特法则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6、开闭原则"><span class="toc-number">6.</span> <span class="toc-text">6、开闭原则</span></a></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
+        
     </div>
 </aside>
 
@@ -372,8 +403,8 @@ var gitment = new Gitment({
   owner: 'iOSerXuebiao',
   repo: 'blogComments',
   oauth: {
-    client_id: '91aebc819445cd7434c8',
-    client_secret: 'b1190d833ea4db6d95432e3cb5036882a1edc6b3',
+    client_id: '2f8a187a5a6646247d4e',
+    client_secret: '411a4b71995cad3f3a04cb0a22c89c007108ce24',
   },
 })
 gitment.render('gitment-ctn')
@@ -472,6 +503,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color4">iOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color5">资料整理</a>
               </li>
              
               <li class="article-tag-list-item">
