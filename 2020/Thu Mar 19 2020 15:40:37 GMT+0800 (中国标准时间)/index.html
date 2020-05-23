@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="X的博客">
 <meta property="og:description" content="UML类图">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2020-03-23T07:42:21.387Z">
+<meta property="og:updated_time" content="2020-05-23T08:15:52.911Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="X的博客" type="application/atom+xml">
@@ -58,11 +58,13 @@
 			
 				<li><a href="/">主页</a></li>
 	        
-				<li><a href="/tags/%E9%9A%8F%E7%AC%94/">随笔</a></li>
-	        
-				<li><a href="/tags/iOS/">iOS</a></li>
-	        
 				<li><a href="/categories/%E7%BC%96%E7%A8%8B%E6%80%9D%E6%83%B3">编程思想</a></li>
+	        
+				<li><a href="/categories/%E6%9E%B6%E6%9E%84%E7%9F%A5%E8%AF%86">架构知识</a></li>
+	        
+				<li><a href="/tags/iOS/">iOS进阶</a></li>
+	        
+				<li><a href="/tags/%E9%9A%8F%E7%AC%94/">随笔</a></li>
 	        
 			</ul>
 		</nav>
@@ -124,6 +126,8 @@
 			
 				
 			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -144,13 +148,15 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 25%"><a href="/">主页</a></li>
+					<li style="width: 20%"><a href="/">主页</a></li>
 		        
-					<li style="width: 25%"><a href="/tags/%E9%9A%8F%E7%AC%94/">随笔</a></li>
+					<li style="width: 20%"><a href="/categories/%E7%BC%96%E7%A8%8B%E6%80%9D%E6%83%B3">编程思想</a></li>
 		        
-					<li style="width: 25%"><a href="/tags/iOS/">iOS</a></li>
+					<li style="width: 20%"><a href="/categories/%E6%9E%B6%E6%9E%84%E7%9F%A5%E8%AF%86">架构知识</a></li>
 		        
-					<li style="width: 25%"><a href="/categories/%E7%BC%96%E7%A8%8B%E6%80%9D%E6%83%B3">编程思想</a></li>
+					<li style="width: 20%"><a href="/tags/iOS/">iOS进阶</a></li>
+		        
+					<li style="width: 20%"><a href="/tags/%E9%9A%8F%E7%AC%94/">随笔</a></li>
 		        
 				</ul>
 			</nav>
@@ -198,10 +204,25 @@
 <p> chmod 755 kspod 权限</p>
 <p>./kspod KSMallCartModule 1.0.0.0 ‘first commit’</p>
 <p>pod ‘KSMallOrderModule’, :path =&gt; ‘../KSPrivatePods/KSMallOrderModule/‘       #订单模块</p>
+<p>swift-alogrithm-club上的数据结构</p>
+<h1 id="Hexo"><a href="#Hexo" class="headerlink" title="Hexo"></a>Hexo</h1><p><a href="https://ioserxuebiao.github.io" target="_blank" rel="noopener">博客地址</a></p>
+<p>参考链接<br><a href="https://www.jianshu.com/p/860d3e0fff58" target="_blank" rel="noopener">https://www.jianshu.com/p/860d3e0fff58</a><br><a href="https://segmentfault.com/a/1190000017986794" target="_blank" rel="noopener">https://segmentfault.com/a/1190000017986794</a></p>
+<p>hexo n “我的博客” == hexo new “我的博客”   //新建文章<br>hexo g == hexo generate  //生成<br>hexo s == hexo server    //启动服务预览<br>hexo d == hexo deploy    //部署</p>
+<p>hexo server                //Hexo会监视文件变动并自动更新，无须重启服务器<br>hexo server -s             //静态模式<br>hexo server -p 5000        //更改端口<br>hexo server -i 192.168.1.1 //自定义 IP<br>hexo clean                 //清除缓存，若是网页正常情况下可以忽略这条命令</p>
+<p>部署前最好能先执行一下 hexo clean 命令，清除缓存文件 (db.json) 和已生成的静态文件 (public)。在某些情况（尤其是更换主题后），如果发现您对站点的更改无论如何也不生效，您可能需要运行该命令。<br>hexo clean</p>
+<p>部署上传<br>hexo g -d</p>
 <h3 id="Pod"><a href="#Pod" class="headerlink" title="Pod"></a>Pod</h3><p>pod install –repo-update</p>
 <p>更新慢的问题：无论是执行pod install还是pod update都卡在了Analyzing dependencies不动:</p>
 <p>pod install –verbose –no-repo-update</p>
 <p>pod update –verbose –no-repo-update</p>
+<p>查找一个文件或目录<br>find / -name validator.rb</p>
+<p>pod检查当前安装版本列表<br>gem list –local | grep cocoapods<br>卸载不用的版本<br>sudo gem uninstall cocoapods   1.5.3<br>安装指定版本<br>sudo gem install cocoapods -v 1.6.1<br>安装最新版本<br>sudo gem install cocoapods</p>
+<h3 id="Pod私有库制作教程"><a href="#Pod私有库制作教程" class="headerlink" title="Pod私有库制作教程"></a>Pod私有库制作教程</h3><p><a href="http://blog.wtlucky.com/blog/2015/02/26/create-private-podspec/" target="_blank" rel="noopener">http://blog.wtlucky.com/blog/2015/02/26/create-private-podspec/</a></p>
+<p>####gems目录<br>cd /Library/Ruby/Gems/2.3.0/gems/cocoapods-1.8.4</p>
+<p>私有库i386上传问题，修改validator.rb文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">def xcodebuild(action, scheme, configuration)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">      require &#39;fourflusher&#39;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">      command &#x3D; %W(clean #&#123;action&#125; -workspace #&#123;File.join(validation_dir, &#39;App.xcworkspace&#39;)&#125; -scheme #&#123;scheme&#125; -configuration #&#123;configuration&#125;)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">      case consumer.platform_name</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">      when :osx, :macos</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">        command +&#x3D; %w(CODE_SIGN_IDENTITY&#x3D;)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">      when :ios</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">#        command +&#x3D; %w(CODE_SIGN_IDENTITY&#x3D;- -sdk iphonesimulator)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">#        command +&#x3D; Fourflusher::SimControl.new.destination(:oldest, &#39;iOS&#39;, deployment_target)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">#        xcconfig &#x3D; consumer.pod_target_xcconfig</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">#        if xcconfig</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">#          archs &#x3D; xcconfig[&#39;VALID_ARCHS&#39;]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">#          if archs &amp;&amp; (archs.include? &#39;armv7&#39;) &amp;&amp; !(archs.include? &#39;i386&#39;) &amp;&amp; (archs.include? &#39;x86_64&#39;)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">#            # Prevent Xcodebuild from testing the non-existent i386 simulator if armv7 is specified without i386</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">#            command +&#x3D; %w(ARCHS&#x3D;x86_64)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">#          end</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">#        end</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">        command +&#x3D; %w(--help)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">      when :watchos</span></pre></td></tr></table></figure>
+
+
 <h3 id="图片资源"><a href="#图片资源" class="headerlink" title="图片资源"></a>图片资源</h3><p><a href="https://www.pexels.com/search/cat/" target="_blank" rel="noopener">https://www.pexels.com/search/cat/</a>     1.48K张<br><a href="https://unsplash.com/search/photos/cat" target="_blank" rel="noopener">https://unsplash.com/search/photos/cat</a>  3.9K张<br><a href="https://pixabay.com/zh/images/search/cat/" target="_blank" rel="noopener">https://pixabay.com/zh/images/search/cat/</a></p>
 <h3 id="objc源码："><a href="#objc源码：" class="headerlink" title="objc源码："></a>objc源码：</h3><p><a href="https://opensource.apple.com/tarballs/objc4/" target="_blank" rel="noopener">https://opensource.apple.com/tarballs/objc4/</a><br><a href="https://objccn.io" target="_blank" rel="noopener">https://objccn.io</a>  </p>
 <h3 id="Flutter："><a href="#Flutter：" class="headerlink" title="Flutter："></a>Flutter：</h3><p><a href="https://flutterawesome.com" target="_blank" rel="noopener">https://flutterawesome.com</a><br><a href="https://flutter-io.cn/" target="_blank" rel="noopener">https://flutter-io.cn/</a>   同步官网文档<br><a href="https://book.flutterchina.club" target="_blank" rel="noopener">https://book.flutterchina.club</a>   flutter开发实战<br><a href="https://startflutter.com" target="_blank" rel="noopener">https://startflutter.com</a></p>
@@ -358,22 +379,6 @@
   
 
   
-  <div id="gitment-ctn"></div> 
-<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
-<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
-<script>
-var gitment = new Gitment({
-  id: "http://yoursite.com/2020/Thu%20Mar%2019%202020%2015:40:37%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)/",
-  owner: 'iOSerXuebiao',
-  repo: 'blogComments',
-  oauth: {
-    client_id: '2f8a187a5a6646247d4e',
-    client_secret: '411a4b71995cad3f3a04cb0a22c89c007108ce24',
-  },
-})
-gitment.render('gitment-ctn')
-</script>
-  
 
 
           </div>
@@ -474,11 +479,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color5">设计原则</a>
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color4">UML</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color4">UML</a>
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color5">设计原则</a>
               </li>
              
               <li class="article-tag-list-item">
