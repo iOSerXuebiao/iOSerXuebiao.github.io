@@ -6,13 +6,17 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Tag: iOS | X的博客</title>
+  <title>架构概念 | X的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="X的博客">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;tags&#x2F;iOS&#x2F;index.html">
+  <meta name="description" content="组件、插件、模块、子应用、库、框架等概念辨析网上有许多讲组件化、模块化等概念的文章，但大家一般都是将这两个概念混为一谈的，并没有加以区分。而且实际上许多人对于组件、插件、模块、子应用等概念的区别也不甚明了，甚至于许多博客文章专门解说这几个概念都有些谬误。之前已经写了一篇文章专门对组件和模块两个概念进行辨析，现在我们对于更多的概念在更高的层次上进行辨析。想分清这几个概念我觉得结合一下软件的渐进式开发">
+<meta name="keywords" content="架构概念">
+<meta property="og:type" content="article">
+<meta property="og:title" content="架构概念">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;2020-05-23-16:26:15&#x2F;index.html">
 <meta property="og:site_name" content="X的博客">
+<meta property="og:description" content="组件、插件、模块、子应用、库、框架等概念辨析网上有许多讲组件化、模块化等概念的文章，但大家一般都是将这两个概念混为一谈的，并没有加以区分。而且实际上许多人对于组件、插件、模块、子应用等概念的区别也不甚明了，甚至于许多博客文章专门解说这几个概念都有些谬误。之前已经写了一篇文章专门对组件和模块两个概念进行辨析，现在我们对于更多的概念在更高的层次上进行辨析。想分清这几个概念我觉得结合一下软件的渐进式开发">
 <meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2020-05-23T08:35:40.743Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="X的博客" type="application/atom+xml">
@@ -167,150 +171,222 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-架构概念" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2020" class="archive-year">2020</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/2020-06-02-11:34:34/" class="archive-article-date">
-  	<time datetime="2020-06-02T03:34:34.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-02</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/2020-06-02-11:34:34/">Explain +load and +initlalize</a>
+    <h1 class="article-title" itemprop="name">
+      架构概念
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2020/2020-05-23-16:26:15/" class="archive-article-date">
+  	<time datetime="2020-05-23T08:26:15.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-05-23</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="组件、插件、模块、子应用、库、框架等概念辨析"><a href="#组件、插件、模块、子应用、库、框架等概念辨析" class="headerlink" title="组件、插件、模块、子应用、库、框架等概念辨析"></a>组件、插件、模块、子应用、库、框架等概念辨析</h1><p>网上有许多讲组件化、模块化等概念的文章，但大家一般都是将这两个概念混为一谈的，并没有加以区分。而且实际上许多人对于组件、插件、模块、子应用等概念的区别也不甚明了，甚至于许多博客文章专门解说这几个概念都有些谬误。<br>之前已经写了一篇文章专门对组件和模块两个概念进行辨析，现在我们对于更多的概念在更高的层次上进行辨析。<br>想分清这几个概念我觉得结合一下软件的渐进式开发场景更容易理解。但是下面的篇幅会比较长，所以按惯例还是先说结论，不耐烦的同学可以先看：</p>
+<h2 id="1-概念区别"><a href="#1-概念区别" class="headerlink" title="1.概念区别"></a>1.概念区别</h2><p>• 组件：代码重用，功能相对单一或者独立，无统一接口。组件化开发的成果是基础库和公共组件。<br>• 插件：近乎组件，有统一接口<br>• 模块：高内聚，松耦合，功能相对复杂，有多个统一接口。模块化开发的基础是框架。<br>• 子系统：高于模块，需要生命周期管理。子系统开发的基础是容器。</p>
+<h3 id="1-1-组件和插件"><a href="#1-1-组件和插件" class="headerlink" title="1.1.组件和插件"></a>1.1.组件和插件</h3><p>插件的概念比较形象，一般存在一个“插拔”过程，所以要求可插拔的插件有一个相同的接口（这里所说的接口只是概念上的接口，即调用方法及参数等）。而组件是不存在这个相同接口的。<br>拿我们最常见的网络请求功能举例，无论哪种开发语言，github上可能都有多种网络请求组件，那么对于一个项目而言，从一个网络组件ComponentA切换为另一个网络组件ComponentB是基本无法做到调用方法不改动的。<br>而如果把网络请求组件插件化，即在组件外层抽象一层统一化的调用接口NetworkInterface，然后将当前使用网络请求组件ComponentA包装成实现该接口的网络请求插件PluginA。那么如果以后需要将使用的ComponentA切换为ComponentB，那么只需要将ComponentB包装成PluginB并插入到应用中即可。实际调用时，业务代码还是调用NetworkInterface，不用做任何修改。<br>从上面这个例子我们可以看出，插件和组件的实质区别就在于通过统一接口隔绝业务代码对于组件的直接依赖，这也是我们常听到的所谓的“项目开发时应该把第三方组件封装一下再用”。</p>
+<h3 id="1-2-组件和模块"><a href="#1-2-组件和模块" class="headerlink" title="1.2.组件和模块"></a>1.2.组件和模块</h3><p>两者的实质区别在于：组件化开发是纵向分层，模块化开发是横向分块。<br>所以，模块化并没有要求一定组件化，就是说进行模块化拆分时你可以完全不考虑代码重用，只是把同一业务的代码做内聚整合成不同的模块。只不过这样得到的成果相对简单，我们一般不会这样而已。<br>组件化就比如项目中公共的alert框，它的出现其实是基于代码复用的目的，所以我们把它封装，并给多个地方使用。而模块化就比如一个资讯列表界面，它本身可能只在一个地方使用，没有复用的需求，但我们也要把它封装成模块，这是高内聚的要求，我们不应该把资讯相关的代码在项目中放得到处都是。<br>但像这样的简单模块只是轻模块，统一接口较少。而统一定义的接口越多，其实和主应用的耦合就越高，也便是重模块。<br>而路由就是解决高耦合问题的，不过耦合问题不是模块化开发的需求，只不过我们一般都会在这个时间考虑这一事情而已，就像我们不会只做模块化开发同时不做组件化开发一样。</p>
+<h3 id="1-3-模块和子应用"><a href="#1-3-模块和子应用" class="headerlink" title="1.3.模块和子应用"></a>1.3.模块和子应用</h3><p>模块和子应用的区别与组件和插件的区别有点像，都在于一个统一接口。<br>子应用我们不常提，但其实并不少见，像微信小程序，钉钉中的第三方应用还有企业OA应用中集成的周边功能模块都应该属于子应用的概念。<br>对于模块而言，它暴露给外部调用的接口一般很少，最常见的就是上面提到的路由规则，相当于可以让外部通过路由规则展示它。而子应用需要的就不只是一个展示接口，它可能需要动态的控制子应用的生命周期，以及其他功能上的信息交互（比如，账户信息的同步），甚至于要做到类似插件那样的插拔效果。<br>所以子应用必然是接口化的，而模块则没有硬性的要求。</p>
+<h3 id="1-4-库和框架"><a href="#1-4-库和框架" class="headerlink" title="1.4.库和框架"></a>1.4.库和框架</h3><p>除了上面这四种概念，还有两个是我们开发中常遇到的：库和框架。<br>库，或者基础库，概念上偏近于各种工具积累成的集合，是软件代码的层面是分层的概念，所以对应组件化。基础库甚至可以看做是一个大的组件。<br>而框架顾名思义是结构化的，是相对整体的一个概念，所以应用于模块化，甚至是子应用化。<br>比如在iOS中，RAC是一个库，而基于此的一套MVVM的具体实现成果（单页面的文件结构，多页面的交互等等）才叫框架。因为框架本身就有架构思想在里面。</p>
+<h2 id="2-渐进式辨析"><a href="#2-渐进式辨析" class="headerlink" title="2.渐进式辨析"></a>2.渐进式辨析</h2><p>上面讲了一下几个概念的区别，当然这几个概念在服务端开发和客户端开发领域可能有些微差别，我们就不深究了。想要更深入的了解这些概念的区别，我准备拿一个渐进式开发移动端项目的例子进行辨析。<br>首先我们定义一个虚拟的产品——一款知识类应用，包含常见的资讯、问答、学院、直播等功能。<br>接下来我们从设计的角度逐步拆分这个产品。</p>
+<h3 id="2-1原始态"><a href="#2-1原始态" class="headerlink" title="2.1原始态"></a>2.1原始态</h3><p>如果开发时没有考虑任何组件化、模块化开发，那么此应用的所有功能都是堆积在一起的，总结起来就是代码特点就是高耦合，低内聚，无重用。<br>面对这样的一堆代码，技术经理可能要让你做一下代码重构，这就是你下一步的工作。</p>
+<h3 id="2-2组件"><a href="#2-2组件" class="headerlink" title="2.2组件"></a>2.2组件</h3><p>那么你进行代码重构的第一步是什么呢？<br>答：将工程中重复的代码合并成为一份，也就是重用。<br>如果让我们来看组件化开发的定义，它的着重点就是代码重用。那这一步最后的结果就是提炼出一个个组件给不同的功能使用。<br>这里我们可以看一下其中的依赖关系：具体功能依赖提炼出来的组件，组件本身之间可能也有依赖关系，但一般不多。所以我们总结组件化开发的原则就是高重用，低耦合。当然这只是相对而言。<br>基于这样的认识，我们甚至于可以把资讯、问答、学院、直播等功能封装成组件，只不过这些组件比较大，依赖可能多些，不过本质上没有多少区别。<br>就在你进行重构的过程中，这时需求来了：运营人员要求首页顶部的九宫格样式工具栏可动态配置，通过服务端数据修改显示功能，并调用对应的功能页面。</p>
+<h3 id="2-3插件"><a href="#2-3插件" class="headerlink" title="2.3插件"></a>2.3插件</h3><p>代码重构从来不是超然物外的，在进行过程中接到新需求也是常有的事情。那么，对于这样一个需求，应该怎么考虑呢？<br>这个动态化需求很普遍，只不过这里有一个隐性要求——既然需求中要求功能动态配置，那么调用功能的地方就不知道功能的具体实现。<br>所以最终的方案中被调用功能必须有统一接口。我们这里说的接口只是编程领域的抽象概念，并非是指具体语言的interface或者protocol。<br>而有了这一统一接口，其配置功能其实就是“插拔”过程了。这样的成果实质上已经是插件了。<br>插件可以解释成可插拔式组件，它的核心就是不同功能实现提供统一接口。<br>项目中插件化的例子其实也不少，再举一个例子：比如资讯和问答功能使用的弹框样式不同，但是在两个功能内部其弹框样式是一致的。<br>面对这样的问题，你在重构时可能会简单的封装出两个组件AlertA和AlertB，分别给两个功能使用。这样确实很便捷，而且适合当下的场景，但是从设计或者长远发展的角度上来考虑，如果资讯里面弹框样式需要换成和问答一样，甚至其他样式，那么基于现有的方法，你就需要修改资讯功能中所有调用弹框的地方。<br>所以插件化是解决这个问题的好办法：定义AlertInterface接口给具体业务功能使用，并实现AlertPluginA、AlertPluginB，在外面给不同的功能指定不能的插件即可。 </p>
+<h3 id="2-4模块"><a href="#2-4模块" class="headerlink" title="2.4模块"></a>2.4模块</h3><p>这时候项目的组件化拆分完成，技术经理说以后不同的模块会交由不同的人来维护，各人维护各自负责的代码。<br>这个需求初看上去只是项目管理上的需求，但实际执行时若资讯、问答、学院、直播分别由四个人维护，那么他们虽然大部分代码是相互隔离的，但仍然会有相当一部分代码耦合在一起，有时候会同时修改同一个代码文件。<br>这时候要做的自然就是模块化。<br>为什么是模块化呢？按照模块的定义，它是以关注点进行划分的，而关注点说到底就是功能，也就是说根据我们上面的例子，资讯、问答、学院、直播可以分成不同的模块。<br>我们最开始定义这个虚拟产品的时候说，它有三个特点——高耦合、低内聚、无重用。而第一点组件化开发主要是解决了重用问题，提升了部分内聚，而耦合问题则没有涉及。<br>所以说我们上面可以将这个产品在逻辑上划分为资讯、问答、学院、直播四个模块，但在代码层面上它们却不是四个模块，因为它们的代码都是混杂在一起的。比如产品首页，可能推荐了部分资讯、显示了热门问答、推送了目前的直播，而这些功能的代码则是写在一起的；再比如程序启动的时候，这四个模块都需要初始化一些数据，而初始化数据的代码也是写在一起的。<br>而模块化开发就是为了解决这一问题，即提高内聚，将分属同一模块代码放到一起；降低耦合，将不同模块间的耦合程度弱化。<br>高内聚是这一步的目标。但现状是有许多地方会用到多个模块，比如启动的时候会调用四个模块，首页会展示三个模块的界面。如果要高内聚，那么必然需要这些模块为不同的场景提供相同的方法，这就是说所有模块要实现同一套多个接口。<br>而低耦合其实并非是模块化开发的要求，其实更多时候是基于产品上的动态化要求，所以最常见的解决方案就是路由机制。<br>讲到这里，我们可以看到模块化和组件化的区别就已经很明显了。<br>对于一般应用而言，代码设计优化到这一步就很好了，无论是代码可读性、可维护性、工作协作效率都得到了保障。不过为了讲到我们上面所说的所有概念，我们不妨皮一下，给自己提点需求：<br>产品经理想把学院模块单独提出来做一个APP，但是因为技术经理反映开发资源有限，不能给这个APP配备独立的开发人员，所以最终的结果是这个APP的功能和原应用中的学院模块使用同一套代码，且功能相同。</p>
+<h3 id="2-5子应用"><a href="#2-5子应用" class="headerlink" title="2.5子应用"></a>2.5子应用</h3><p>对于开发人员来说，这也不能算多困难的需求，只需要再创建一个新工程，将学院模块代码引用过来并显示即可。<br>这个方案简单直接，即便后面再把直播分离出单独APP我也可以这样来做。<br>但是，有没有觉得这个方案和我们之前提到的Alert的例子有些神似，在这个方案中，新的工程必然直接耦合具体的模块代码，你需要在里面编写很多初始化代码。而这样的代码在单独的APP中和原APP中是相当类似的。<br>按照《重构》一书中的提法，这是明显的坏味道，我们应该在工程和模块代码之间抽象出一层接口，使两者解除直接耦合，这样我们甚至可以做到只需要配置就可以将一个模块变成一个新的APP。<br>(或许在这个例子中，有些过度设计了，但是原谅我举不出更合情理的例子TAT)<br>上面方案的成果，实际上就把学院模块编程了学院子应用，而这个子应用被原APP和新的独立APP所使用。<br>在概念上，子应用比模块的范围更大，子应用要求能在主应用里运行，也要求必要时可以自己运行，那么就必然要求子应用要提供生命周期接口，和主应用必要时保持一致。<br>其实在上面一步的模块化开发中，有的时候也会有生命周期接口的要求，只不过并非强制，而子应用的设计中则是必须要考虑的。 </p>
+<h2 id="3-总结"><a href="#3-总结" class="headerlink" title="3.总结"></a>3.总结</h2><p>到此，我们就把组件、插件、模块、子应用四个不同程度的设计概念异同讲完了，希望读者能有所得。文章中若有其他不足之处，恳请不吝赐教。</p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" target="_blank" rel="noopener" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>佛说：你我有缘<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/img/alipay.jpg">
+                      <span class="reward-type">支付宝</span>
+                    </div>
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/img/wechat.jpg">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color4">iOS</a>
+        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color5">架构概念</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/2020-06-01-11:45:31/" class="archive-article-date">
-  	<time datetime="2020-06-01T03:45:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-01</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/2020-06-01-11:45:31/">SEL和Method和IMP详解</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color4">iOS</a>
+        			<a href="/categories/架构知识//" class="article-tag-list-link color5">架构知识</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" target="_blank" rel="noopener" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" target="_blank" rel="noopener" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;" target="_blank" rel="noopener"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2020/2020-05-23-16:26:15/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-      
-        </div></section>
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
+<nav id="article-nav">
+  
+    <a href="/2020/2020-05-23-16:27:28/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          组件化方案
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/Thu%20Mar%2019%202020%2015:40:37%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">随手记录📝</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" target="_blank" rel="noopener" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/12-03-15:15:15/" class="archive-article-date">
-  	<time datetime="2019-12-03T07:15:15.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-03</time>
-</a>
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#组件、插件、模块、子应用、库、框架等概念辨析"><span class="toc-number">1.</span> <span class="toc-text">组件、插件、模块、子应用、库、框架等概念辨析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-概念区别"><span class="toc-number">1.1.</span> <span class="toc-text">1.概念区别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-组件和插件"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.1.组件和插件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-组件和模块"><span class="toc-number">1.1.2.</span> <span class="toc-text">1.2.组件和模块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-模块和子应用"><span class="toc-number">1.1.3.</span> <span class="toc-text">1.3.模块和子应用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-库和框架"><span class="toc-number">1.1.4.</span> <span class="toc-text">1.4.库和框架</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-渐进式辨析"><span class="toc-number">1.2.</span> <span class="toc-text">2.渐进式辨析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1原始态"><span class="toc-number">1.2.1.</span> <span class="toc-text">2.1原始态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2组件"><span class="toc-number">1.2.2.</span> <span class="toc-text">2.2组件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3插件"><span class="toc-number">1.2.3.</span> <span class="toc-text">2.3插件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4模块"><span class="toc-number">1.2.4.</span> <span class="toc-text">2.4模块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-5子应用"><span class="toc-number">1.2.5.</span> <span class="toc-text">2.5子应用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-总结"><span class="toc-number">1.3.</span> <span class="toc-text">3.总结</span></a></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
         </div>
-    	 
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/12-03-15:15:15/">iOS资料整理</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color5">资料整理</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
   
 
-    
+  
+
+  
 
 
           </div>
@@ -333,9 +409,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
