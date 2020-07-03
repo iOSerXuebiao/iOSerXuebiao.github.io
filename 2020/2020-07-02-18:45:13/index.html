@@ -12,15 +12,15 @@
 <meta name="keywords" content="iOS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS 内存布局&amp;内存管理方案">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;Thu%20Jul%2002%202020%2018:45:13%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)&#x2F;index.html">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;2020-07-02-18:45:13&#x2F;index.html">
 <meta property="og:site_name" content="X的博客">
 <meta property="og:description" content="内存布局-五大区">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;Thu%20Jul%2002%202020%2018:45:13%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)&#x2F;1593686901942.jpg">
-<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;Thu%20Jul%2002%202020%2018:45:13%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)&#x2F;1593686932245.jpg">
-<meta property="og:updated_time" content="2020-07-03T02:25:03.753Z">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;2020-07-02-18:45:13&#x2F;1593686901942.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;2020-07-02-18:45:13&#x2F;1593686932245.jpg">
+<meta property="og:updated_time" content="2020-07-03T02:30:02.975Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;Thu%20Jul%2002%202020%2018:45:13%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)&#x2F;1593686901942.jpg">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;2020-07-02-18:45:13&#x2F;1593686901942.jpg">
   
     <link rel="alternative" href="/atom.xml" title="X的博客" type="application/atom+xml">
   
@@ -186,7 +186,7 @@
   
 
         
-        <a href="/2020/Thu%20Jul%2002%202020%2018:45:13%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)/" class="archive-article-date">
+        <a href="/2020/2020-07-02-18:45:13/" class="archive-article-date">
   	<time datetime="2020-07-02T10:45:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-02</time>
 </a>
         
@@ -195,7 +195,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h2 id="内存布局-五大区"><a href="#内存布局-五大区" class="headerlink" title="内存布局-五大区"></a>内存布局-五大区</h2><a id="more"></a>
-<p><img src="/2020/Thu%20Jul%2002%202020%2018:45:13%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)/1593686901942.jpg" alt></p>
+<p><img src="/2020/2020-07-02-18:45:13/1593686901942.jpg" alt></p>
 <ol>
 <li><strong>栈区 0x7</strong> 创建临时变量时由编译器自动分配，在不需要的时候自动清除的变量的存储区。<br>里面的变量通常是局部变量、函数参数等。在一个进程中，位于用户虚拟地址空间顶部的是用户栈，编 译器用它来实现函数的调用。和堆一样，用户栈在程序执行期间可以动态地扩展和收缩。</li>
 </ol>
@@ -228,7 +228,7 @@
 <h3 id="NONPOINTER-ISA"><a href="#NONPOINTER-ISA" class="headerlink" title="NONPOINTER_ISA"></a>NONPOINTER_ISA</h3><p>NSObject继承关系：<br>NSObject -&gt; Class -&gt; objc_class -&gt; objc_object -&gt; isa_t</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">union isa_t &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    isa_t() &#123; &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    isa_t(uintptr_t value) : bits(value) &#123; &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    Class cls;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    uintptr_t bits;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">#if defined(ISA_BITFIELD)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">    struct &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">        ISA_BITFIELD;  &#x2F;&#x2F; defined in isa.h</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">    &#125;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">#endif</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">&#125;;</span></pre></td></tr></table></figure>
 
-<p>isa_t是联合体，然后重点看ISA_BITFIELD，<br><img src="/2020/Thu%20Jul%2002%202020%2018:45:13%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)/1593686932245.jpg" alt></p>
+<p>isa_t是联合体，然后重点看ISA_BITFIELD，<br><img src="/2020/2020-07-02-18:45:13/1593686932245.jpg" alt></p>
 <h4 id="参数解释"><a href="#参数解释" class="headerlink" title="参数解释"></a>参数解释</h4><blockquote>
 <p><strong>nonpointer</strong>:表示是否对 isa 指针开启指针优化 ， 0:纯isa指针，1:不止是类对象地址,isa 中包含了类信息、对象的引用计数等。</p>
 </blockquote>
@@ -356,7 +356,7 @@
     <a class="close js-modal-close" href="javascript:;" target="_blank" rel="noopener"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2020/Thu%20Jul%2002%202020%2018:45:13%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2020/2020-07-02-18:45:13/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -527,15 +527,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color5">架构概念</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color4">组件化</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color4">UML</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color5">架构概念</a>
               </li>
             
             <div class="clearfix"></div>
