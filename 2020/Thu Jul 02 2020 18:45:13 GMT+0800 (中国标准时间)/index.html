@@ -8,17 +8,17 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>iOS 内存布局&amp;内存管理方案 | X的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="##内存布局-五大区">
+  <meta name="description" content="内存布局-五大区">
 <meta name="keywords" content="iOS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS 内存布局&amp;内存管理方案">
 <meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;Thu%20Jul%2002%202020%2018:45:13%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)&#x2F;index.html">
 <meta property="og:site_name" content="X的博客">
-<meta property="og:description" content="##内存布局-五大区">
+<meta property="og:description" content="内存布局-五大区">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;Thu%20Jul%2002%202020%2018:45:13%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)&#x2F;1593686901942.jpg">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;Thu%20Jul%2002%202020%2018:45:13%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)&#x2F;1593686932245.jpg">
-<meta property="og:updated_time" content="2020-07-03T02:22:49.243Z">
+<meta property="og:updated_time" content="2020-07-03T02:25:03.753Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;Thu%20Jul%2002%202020%2018:45:13%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)&#x2F;1593686901942.jpg">
   
@@ -194,8 +194,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>##内存布局-五大区</p>
-<a id="more"></a>
+        <h2 id="内存布局-五大区"><a href="#内存布局-五大区" class="headerlink" title="内存布局-五大区"></a>内存布局-五大区</h2><a id="more"></a>
 <p><img src="/2020/Thu%20Jul%2002%202020%2018:45:13%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)/1593686901942.jpg" alt></p>
 <ol>
 <li><strong>栈区 0x7</strong> 创建临时变量时由编译器自动分配，在不需要的时候自动清除的变量的存储区。<br>里面的变量通常是局部变量、函数参数等。在一个进程中，位于用户虚拟地址空间顶部的是用户栈，编 译器用它来实现函数的调用。和堆一样，用户栈在程序执行期间可以动态地扩展和收缩。</li>
@@ -212,7 +211,7 @@
 <ol start="5">
 <li><strong>代码区</strong> 用于存放程序运行时的代码，代码会被编译成二进制存进内存的程序代码区</li>
 </ol>
-<p>##内存管理方案<br>###TaggedPointer<br>通常我们创建对象，对象存储在堆中，对象的指针存储在栈中，如果我们要找到这个对象，就需要先在栈中，找到指针地址，然后根据指针地址找到在堆中的对象。<br>这个过程比较繁琐，当存储的对象只是一个很小的东西，比如一个字符串，一个数字。去走这么一个繁琐的过程，无非是耗费性能的，所以苹果就搞出了TaggedPointer这么一个东西。</p>
+<h2 id="内存管理方案"><a href="#内存管理方案" class="headerlink" title="内存管理方案"></a>内存管理方案</h2><h3 id="TaggedPointer"><a href="#TaggedPointer" class="headerlink" title="TaggedPointer"></a>TaggedPointer</h3><p>通常我们创建对象，对象存储在堆中，对象的指针存储在栈中，如果我们要找到这个对象，就需要先在栈中，找到指针地址，然后根据指针地址找到在堆中的对象。<br>这个过程比较繁琐，当存储的对象只是一个很小的东西，比如一个字符串，一个数字。去走这么一个繁琐的过程，无非是耗费性能的，所以苹果就搞出了TaggedPointer这么一个东西。</p>
 <ol>
 <li>TaggedPointer是苹果为了解决32位CPU到64位CPU的转变带来的内存占用和效率问题，针对NSNumber、NSDate以及部分NSString的内存优化方案。</li>
 </ol>
@@ -223,15 +222,14 @@
 <li>Tagged Pointer指针中包含了当前对象的地址、类型、具体数值。因此Tagged Pointer指针在内存读取上有着3倍的效率，创建时比普通需要malloc跟free的类型快106倍。</li>
 </ol>
 <p><a href="https://www.jianshu.com/p/c9089494fb6c" target="_blank" rel="noopener">这里有对TaggedPointer进行详细介绍</a></p>
-<p>###问题<br>为什么第二个for会崩溃？</p>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>为什么第二个for会崩溃？</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">dispatch_queue_t queue &#x3D; dispatch_queue_create(&quot;queue&quot;, DISPATCH_QUEUE_CONCURRENT);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    dispatch_async(queue, ^&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">        for (int i &#x3D; 0 ; i&lt;1000000; i++) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">            self.str &#x3D; @&quot;abcd&quot;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">        &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    &#125;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    dispatch_async(queue, ^&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">        for (int i &#x3D; 0 ; i&lt;1000000; i++) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">            self.str &#x3D; [NSString stringWithFormat:@&quot;adfalkdjfldkasjflakjsdkflasf-- %d&quot;,I];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">        &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">    &#125;);</span></pre></td></tr></table></figure>
 <p>答：taggedpointer。在setproperty函数中，执行了objc_release(id obj)。<br>由于大量的循环，导致了线程问题，使引用计数&lt;=-1。<br>但是由于第一个循环中的obj是taggedpointer类型的string，会直接return obj，并不会release。但是这里release，retain的时候咋办呢，引用计数是一直往上增吗？并不是，在objc_retain(id obj)中，同样判断了obj-&gt;isTaggedPointer，如果是true，就直接return obj。</p>
-<p>###NONPOINTER_ISA<br>NSObject继承关系：<br>NSObject -&gt; Class -&gt; objc_class -&gt; objc_object -&gt; isa_t</p>
+<h3 id="NONPOINTER-ISA"><a href="#NONPOINTER-ISA" class="headerlink" title="NONPOINTER_ISA"></a>NONPOINTER_ISA</h3><p>NSObject继承关系：<br>NSObject -&gt; Class -&gt; objc_class -&gt; objc_object -&gt; isa_t</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">union isa_t &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    isa_t() &#123; &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    isa_t(uintptr_t value) : bits(value) &#123; &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    Class cls;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    uintptr_t bits;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">#if defined(ISA_BITFIELD)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">    struct &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">        ISA_BITFIELD;  &#x2F;&#x2F; defined in isa.h</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">    &#125;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">#endif</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">&#125;;</span></pre></td></tr></table></figure>
 
 <p>isa_t是联合体，然后重点看ISA_BITFIELD，<br><img src="/2020/Thu%20Jul%2002%202020%2018:45:13%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)/1593686932245.jpg" alt></p>
-<p>####参数解释</p>
-<blockquote>
+<h4 id="参数解释"><a href="#参数解释" class="headerlink" title="参数解释"></a>参数解释</h4><blockquote>
 <p><strong>nonpointer</strong>:表示是否对 isa 指针开启指针优化 ， 0:纯isa指针，1:不止是类对象地址,isa 中包含了类信息、对象的引用计数等。</p>
 </blockquote>
 <blockquote>
@@ -401,7 +399,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    目录，不存在的…
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#内存布局-五大区"><span class="toc-number">1.</span> <span class="toc-text">内存布局-五大区</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#内存管理方案"><span class="toc-number">2.</span> <span class="toc-text">内存管理方案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#TaggedPointer"><span class="toc-number">2.1.</span> <span class="toc-text">TaggedPointer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#问题"><span class="toc-number">2.2.</span> <span class="toc-text">问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NONPOINTER-ISA"><span class="toc-number">2.3.</span> <span class="toc-text">NONPOINTER_ISA</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#参数解释"><span class="toc-number">2.3.1.</span> <span class="toc-text">参数解释</span></a></li></ol></li></ol></li></ol>
                     </div>
                 </span>
             </div>
@@ -533,11 +531,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color4">UML</a>
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color4">组件化</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color4">组件化</a>
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color4">UML</a>
               </li>
             
             <div class="clearfix"></div>
