@@ -169,6 +169,82 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-iOS-内存布局-内存管理方案" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/Thu%20Jul%2002%202020%2018:45:13%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)/">iOS 内存布局&amp;内存管理方案</a>
+    </h1>
+  
+
+        
+        <a href="/2020/Thu%20Jul%2002%202020%2018:45:13%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)/" class="archive-article-date">
+  	<time datetime="2020-07-02T10:45:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##内存布局-五大区</p>
+        
+          <a class="article-more-a" href="/2020/Thu%20Jul%2002%202020%2018:45:13%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color4">iOS</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/Thu%20Jul%2002%202020%2018:45:13%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" target="_blank" rel="noopener" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Explain-load-and-initlalize" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -189,125 +265,10 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="Explain-load-and-initlalize"><a href="#Explain-load-and-initlalize" class="headerlink" title="Explain +load and +initlalize"></a>Explain +load and +initlalize</h2><p><strong>+ (void)load;</strong><br>Apple文档是这样描述的：</p>
-<blockquote>
-<p>Invoked whenever a class or category is added to the Objective-C runtime; implement this method to perform class-specific behavior upon loading.</p>
-</blockquote>
-<blockquote>
-<p>当类（Class）或者类别（Category）加入Runtime中时调用。<br>实现该方法，可以在加载时做一些类特有的操作。</p>
-</blockquote>
-<blockquote>
-<p>Discussion</p>
-</blockquote>
-<blockquote>
-<p>The load message is sent to classes and categories that are both dynamically loaded and statically linked, but only if the newly loaded class or category implements a method that can respond.</p>
-</blockquote>
-<blockquote>
-<p>The order of initialization is as follows:</p>
-</blockquote>
-<blockquote>
-<p>All initializers in any framework you link to.<br>调用所有的Framework中的初始化方法</p>
-</blockquote>
-<blockquote>
-<p>All +load methods in your image.<br>调用所有的+load方法</p>
-</blockquote>
-<blockquote>
-<p>All C++ static initializers and C/C++ attribute(constructor) functions in your image.<br>调用C++的静态初始化方及C/C++中的attribute(constructor)函数</p>
-</blockquote>
-<blockquote>
-<p>All initializers in frameworks that link to you.<br>调用所有链接到目标文件的framework中的初始化方法</p>
-</blockquote>
-<blockquote>
-<p>In addition:</p>
-</blockquote>
-<blockquote>
-<p>A class’s +load method is called after all of its superclasses’ +load methods.<br>一个类的+load方法在其父类的+load方法后调用</p>
-</blockquote>
-<blockquote>
-<p>A category +load method is called after the class’s own +load method.<br>一个Category的+load方法在被其扩展的类的自有+load方法后调用</p>
-</blockquote>
-<blockquote>
-<p>In a custom implementation of load you can therefore safely message other unrelated classes from the same image, but any load methods implemented by those classes may not have run yet.<br>在+load方法中，可以安全地向同一二进制包中的其它无关的类发送消息，但接收消息的类中的+load方法可能尚未被调用。</p>
-</blockquote>
-<p><a href="https://developer.apple.com/reference/objectivec/nsobject/1418815-load?language=objc" target="_blank" rel="noopener">文档地址</a></p>
-<p><strong>load函数调用特点如下:</strong><br>当类被引用进项目的时候就会执行load函数(在main函数开始执行之前）,与这个类是否被用到无关,每个类的load函数只会自动调用一次.由于load函数是系统自动加载的，因此不需要调用父类的load函数，否则父类的load函数会多次执行。</p>
-<ul>
-<li>当父类和子类都实现load函数时,父类的load方法执行顺序要优先于子类</li>
-<li>类中的load方法执行顺序要优先于类别(Category)</li>
-<li>当有多个类别(Category)都实现了load方法,这几个load方法都会执行,但执行顺序不确定(其执行顺序与类别在Compile Sources中出现的顺序一致)</li>
-<li>当然当有多个不同的类的时候,每个类load 执行顺序与其在Compile Sources出现的顺序一致</li>
-</ul>
-<p><strong>+ (void)initialize;</strong><br>Apple文档是这样描述的：</p>
-<blockquote>
-<p>Initializes the class before it receives its first message.</p>
-</blockquote>
-<blockquote>
-<p>在这个类接收第一条消息之前调用。</p>
-</blockquote>
-<blockquote>
-<p>Discussion</p>
-</blockquote>
-<blockquote>
-<p>The runtime sends initialize to each class in a program exactly one time just before the class, or any class that inherits from it, is sent its first message from within the program. (Thus the method may never be invoked if the class is not used.) The runtime sends the initialize message to classes in a thread-safe manner. Superclasses receive this message before their subclasses.</p>
-</blockquote>
-<blockquote>
-<p>Runtime在一个程序中每一个类的一个程序中发送一个初始化一次，或是从它继承的任何类中，都是在程序中发送第一条消息。（因此，当该类不使用时，该方法可能永远不会被调用。）运行时发送一个线程安全的方式初始化消息。父类的调用一定在子类之前。</p>
-</blockquote>
-<p><a href="https://developer.apple.com/reference/objectivec/nsobject/1418639-initialize?language=objc" target="_blank" rel="noopener">文档地址</a></p>
-<p><strong>initialize函数调用特点如下:</strong><br>initialize在类或者其子类的第一个方法被调用前调用。即使类文件被引用进项目,但是没有使用,initialize不会被调用。由于是系统自动调用，也不需要再调用  [super initialize] ，否则父类的initialize会被多次执行。假如这个类放到代码中，而这段代码并没有被执行，这个函数是不会被执行的。</p>
-<ul>
-<li>父类的initialize方法会比子类先执行</li>
-<li>当子类未实现initialize方法时,会调用父类initialize方法,子类实现initialize方法时,会覆盖父类initialize方法.</li>
-<li>当有多个Category都实现了initialize方法,会覆盖类中的方法,只执行一个(会执行Compile Sources 列表中最后一个Category 的initialize方法)</li>
-</ul>
-<p>我们在Teacher(继承Person).m中不实现initialize方法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;In Person.m</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">+(void)initialize</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">     NSLog(@&quot;%s&quot;,__FUNCTION__);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;In Teacher.m(继承自Person)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">Teacher.m中不实现initialize方法</span></pre></td></tr></table></figure>
-
-<p>我们调用下Teacher的new方法,运行：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">[Teacher new];</span></pre></td></tr></table></figure>
-
-<p>运行结果：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">2017-05-04 14:06:45.051 LoadAndInitializeExample[29238:912579] +[Person initialize]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">2017-05-04 14:06:45.051 LoadAndInitializeExample[29238:912579] +[Person initialize]</span></pre></td></tr></table></figure>
-
-<p>运行后发现父类的initialize方法竟然调用了两次：<br>可见当子类未实现initialize方法,会调用父类initialize方法.<br>但为什么会打印2次呢?<br>我的理解:<br>子类不实现initialize方法，会把继承父类的initialize方法并调用一遍。在此之前,父类初始化时,会先调用一遍自己initialize方法.所以出现2遍,所以为了防止父类initialize中代码多次执行,我们应该这样写:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;In Person.m</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">+(void)initialize</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">	if(self &#x3D;&#x3D; [Person class])</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">	&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">          NSLog(@&quot;%s&quot;,__FUNCTION__);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">	&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
-
-<p>下面我们在 Teacher.m中实现initialize方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;In Person.m</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">+(void)initialize</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">     NSLog(@&quot;%s&quot;,__FUNCTION__);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;In Teacher.m(继承自Person)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">+(void)initialize</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">     NSLog(@&quot;%s&quot;,__FUNCTION__);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
-
-<p>同样调用Teacher 的new方法,运行：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">[Teacher new];</span></pre></td></tr></table></figure>
-
-<p>运行结果:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">2017-05-04 14:07:45.051 LoadAndInitializeExample[29238:912579] +[Person initialize]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">2017-05-04 14:07:45.051 LoadAndInitializeExample[29238:912579] +[Teacher initialize]</span></pre></td></tr></table></figure>
-
-<p>可以看到 当子类实现initialize方法后,会覆盖父类initialize方法,这一点和继承思想一样。</p>
-<p><strong>什么情况下使用：</strong></p>
-<h4 id="load"><a href="#load" class="headerlink" title="+load"></a>+load</h4><p>由于调用load方法时的环境很不安全，我们应该尽量减少load方法的逻辑。另一个原因是load方法是线程安全的，它内部使用了锁，所以我们应该避免线程阻塞在load方法中</p>
-<p>load很常见的一个使用场景,交换两个方法的实现：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;摘自MJRefresh</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">+ (void)load</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    [self exchangeInstanceMethod1:@selector(reloadData) method2:@selector(mj_reloadData)];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    [self exchangeInstanceMethod1:@selector(reloadRowsAtIndexPaths:withRowAnimation:) method2:@selector(mj_reloadRowsAtIndexPaths:withRowAnimation:)];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    [self exchangeInstanceMethod1:@selector(deleteRowsAtIndexPaths:withRowAnimation:) method2:@selector(mj_deleteRowsAtIndexPaths:withRowAnimation:)];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    [self exchangeInstanceMethod1:@selector(insertRowsAtIndexPaths:withRowAnimation:) method2:@selector(mj_insertRowsAtIndexPaths:withRowAnimation:)];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">    [self exchangeInstanceMethod1:@selector(reloadSections:withRowAnimation:) method2:@selector(mj_reloadSections:withRowAnimation:)];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">    [self exchangeInstanceMethod1:@selector(deleteSections:withRowAnimation:) method2:@selector(mj_deleteSections:withRowAnimation:)];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">    [self exchangeInstanceMethod1:@selector(insertSections:withRowAnimation:) method2:@selector(mj_insertSections:withRowAnimation:)];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">+ (void)exchangeInstanceMethod1:(SEL)method1 method2:(SEL)method2</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">    method_exchangeImplementations(class_getInstanceMethod(self, method1), class_getInstanceMethod(self, method2));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
-
-<p>####+initialize initialize方法主要用来对一些不方便在编译期初始化的对象进行赋值。比如NSMutableArray这种类型的实例化依赖于runtime的消息发送，所以显然无法在编译器初始化：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; In Person.m</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; int类型可以在编译期赋值</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">static int someNumber &#x3D; 0; </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">static NSMutableArray *someArray;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">+ (void)initialize &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    if (self &#x3D;&#x3D; [Person class]) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">        &#x2F;&#x2F; 不方便编译期复制的对象在这里赋值</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">        someArray &#x3D; [[NSMutableArray alloc] init];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
-
-<h4 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h4><p><strong>load和initialize的共同点</strong><br>1.如果父类和子类都被调用,父类的调用一定在子类之前；</p>
-<p><strong>+load方法要点</strong><br>    当类被引用进项目的时候就会执行load函数(在main函数开始执行之前）,与这个类是否被用到无关,每个类的load函数只会自动调用一次.由于load函数是系统自动加载的，因此不需要再调用[super load]，否则父类的load函数会多次执行。</p>
-<ul>
-<li>当父类和子类都实现load函数时,父类的load方法执行顺序要优先于子类</li>
-<li>类中的load方法执行顺序要优先于类别(Category)</li>
-<li>当有多个类别(Category)都实现了load方法,这几个load方法都会执行,但执行顺序不确定(其执行顺序与类别在Compile Sources中出现的顺序一致)</li>
-<li>当然当有多个不同的类的时候,每个类load 执行顺序与其在Compile Sources出现的顺序一致</li>
-</ul>
-<p>注意: load调用时机比较早,当load调用时,其他类可能还没加载完成,运行环境不安全. load方法是线程安全的，它使用了锁，我们应该避免线程阻塞在load方法.</p>
-<p><strong>+initialize方法要点</strong></p>
-<p>initialize在类或者其子类的第一个方法被调用前调用。即使类文件被引用进项目,但是没有使用,initialize不会被调用。由于是系统自动调用，也不需要显式的调用父类的initialize，否则父类的initialize会被多次执行。假如这个类放到代码中，而这段代码并没有被执行，这个函数是不会被执行的。</p>
-<ul>
-<li>父类的initialize方法会比子类先执行</li>
-<li>当子类未实现initialize方法时,会调用父类initialize方法,子类实现initialize方法时,会覆盖父类initialize方法.</li>
-<li>当有多个Category都实现了initialize方法,会覆盖类中的方法,只执行一个(会执行Compile Sources 列表中最后一个Category 的initialize方法)</li>
-</ul>
-<p>注意: 在initialize方法收到调用时,运行环境基本健全。 initialize内部也使用了锁，所以是线程安全的。但同时要避免阻塞线程，不要再使用锁</p>
-
+        <h2 id="Explain-load-and-initlalize"><a href="#Explain-load-and-initlalize" class="headerlink" title="Explain +load and +initlalize"></a>Explain +load and +initlalize</h2>
+        
+          <a class="article-more-a" href="/2020/2020-06-02-11:34:34/#more">more >></a>
+        
       
 
       
@@ -380,39 +341,10 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="SEL和Method和IMP分别说下，再谈下对IMP的理解"><a href="#SEL和Method和IMP分别说下，再谈下对IMP的理解" class="headerlink" title="SEL和Method和IMP分别说下，再谈下对IMP的理解"></a>SEL和Method和IMP分别说下，再谈下对IMP的理解</h2><p>在 Objective-C 中，selector，Method 和 implementation(IMP) 都是 Runtime 的组成部分。在实际开发中它们常常可以相互转换来处理消息的发送。<br><strong>Selector</strong><br>定义：<code>typedef struct objc_selector *SEL</code><br>翻译成中文叫做选择子或者选择器，选择子代表方法在 Runtime 期间的标识符。为 SEL 类型，虽然 SEL 是 objc_selector 结构体指针，但实际上它只是<strong>一个 C 字符串</strong>。在类加载的时候，编译器会生成与方法相对应的选择子，并注册到 Objective-C 的 Runtime 运行系统。</p>
-<p>常见的有两种方式来获取/创建选择子:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">SEL selA &#x3D; @selector(setString:);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">SEL selB &#x3D; sel_registerName(&quot;setString:&quot;);</span></pre></td></tr></table></figure>
-
-<p>从 sel_getName() 方法的源码可以看出 SEL 和 const char * 是可以相互转化的：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">const char *sel_getName(SEL sel) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">   return sel ? (const char *)sel : &quot;&lt;null selector&gt;&quot;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
-<p>如果将 selA 和 selB 强转为为 const char *:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">(lldb) p (const char *)$2</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">(const char *) $3 &#x3D; 0x00007fff9a3794b5 &quot;setString:&quot;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">(lldb) p (const char *)$1</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">(const char *) $4 &#x3D; 0x00007fff9a3794b5 &quot;setString:&quot;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">(lldb)</span></pre></td></tr></table></figure>
-
-<p>上面的结果可以看出，selA 和 selB 指向相同的地址，代表同一个字符串。</p>
-<p>如果某个类实现了 setString：方法，那么以上两个选择子传入 respondsToSelector() 方法返回的结果都将为 YES。</p>
-<p>不同类中相同名字的方法所对应的方法选择子是相同的，即使方法名字相同而变量类型不同也会导致它们具有相同的方法选择子。</p>
-<p><strong>Implementation(IMP):</strong></p>
-<p>定义：<code>typedef id (*IMP)(id, SEL, ...)</code></p>
-<p>代表函数指针，即函数执行的入口。该函数使用标准的 C 调用。第一个参数指向 self（它代表当前类实例的地址，如果是类则指向的是它的元类），作为消息的接受者；第二个参数代表方法的选择子；… 代表可选参数，前面的 id 代表返回值。</p>
-<p>举个AF中的源码例子：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">        NSURLSessionConfiguration *configuration &#x3D; [NSURLSessionConfiguration ephemeralSessionConfiguration];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">        NSURLSession *session &#x3D; [NSURLSession sessionWithConfiguration:configuration];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">#pragma GCC diagnostic push</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">#pragma GCC diagnostic ignored &quot;-Wnonnull&quot;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">        NSURLSessionDataTask *localDataTask &#x3D; [session dataTaskWithURL:nil];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">#pragma clang diagnostic pop</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">        IMP originalAFResumeIMP &#x3D; method_getImplementation(class_getInstanceMethod([self class], @selector(af_resume)));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">        Class currentClass &#x3D; [localDataTask class];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">        </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">        while (class_getInstanceMethod(currentClass, @selector(resume))) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">            Class superClass &#x3D; [currentClass superclass];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">            IMP classResumeIMP &#x3D; method_getImplementation(class_getInstanceMethod(currentClass, @selector(resume)));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">            IMP superclassResumeIMP &#x3D; method_getImplementation(class_getInstanceMethod(superClass, @selector(resume)));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">            if (classResumeIMP !&#x3D; superclassResumeIMP &amp;&amp;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">                originalAFResumeIMP !&#x3D; classResumeIMP) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">                [self swizzleResumeAndSuspendMethodForClass:currentClass];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">            &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">            currentClass &#x3D; [currentClass superclass];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">        &#125;</span></pre></td></tr></table></figure>
-
-<p><strong>Method</strong><br>定义：<code>typedef struct objc_method *Method</code><br>Method 对开发者来说是一种不透明的类型，被隐藏在我们平时书写的类或对象的方法背后。它是一个 objc_method 结构体指针，objc_method 的定义为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;&#x2F; Method</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">struct objc_method &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    SEL method_name; </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    char *method_types;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    IMP method_imp;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">&#125;;</span></pre></td></tr></table></figure>
-<ul>
-<li>方法名 method_name 类型为 SEL，前面提到过相同名字的方法即使在不同类中定义，它们的方法选择器也相同。</li>
-<li>方法类型 method_types 是个 char 指针，其实存储着方法的参数类型和返回值类型，即是 Type Encoding 编码。</li>
-<li>method_imp 指向方法的实现，本质上是一个函数的指针，就是前面讲到的 Implementation。</li>
-</ul>
-<p>举个AF中的源码例子：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">static inline void af_swizzleSelector(Class theClass, SEL originalSelector, SEL swizzledSelector) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    Method originalMethod &#x3D; class_getInstanceMethod(theClass, originalSelector);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    Method swizzledMethod &#x3D; class_getInstanceMethod(theClass, swizzledSelector);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    method_exchangeImplementations(originalMethod, swizzledMethod);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
-
-<p>应用场景： When we use method <code>swizzling</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">+ (void)load &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    static dispatch_once_t onceToken;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    dispatch_once(&amp;onceToken, ^&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">        Class class &#x3D; [self class];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">        </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">        SEL originalSelector &#x3D; @selector(prepareToPlay);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">        SEL swizzledSelector &#x3D; @selector(recond_prepareToPlay);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">        </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">        Method originalMethod &#x3D; class_getInstanceMethod(class, originalSelector);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">        Method swizzledMethod &#x3D; class_getInstanceMethod(class, swizzledSelector);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">        </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">        BOOL didAddMethod &#x3D; class_addMethod(class, originalSelector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">        &#x2F;*</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">         @return YES if the method was added successfully, otherwise NO  (for example, the class already contains a method implementation with that name).</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">         如果方法添加成功，则返回YES，否则返回NO（例如，类已包含具有该名称的方法实现）</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">         *&#x2F;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">        if (didAddMethod) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">            class_replaceMethod(class, swizzledSelector, method_getImplementation(originalMethod), method_getTypeEncoding(originalMethod));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">        &#125; else &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">            method_exchangeImplementations(originalMethod, swizzledMethod);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line">        &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">    &#125;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">23</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
-
-<p>Selector，Method，IMP 它们之间的关系可以这么解释：<br><strong>一个类（Class）持有一个分发表，在运行期分发消息，表中的每一个实体代表一个方法（Method），它的名字叫做选择子（SEL），对应着一种方法实现（IMP）。</strong></p>
-
+        <h2 id="SEL和Method和IMP分别说下，再谈下对IMP的理解"><a href="#SEL和Method和IMP分别说下，再谈下对IMP的理解" class="headerlink" title="SEL和Method和IMP分别说下，再谈下对IMP的理解"></a>SEL和Method和IMP分别说下，再谈下对IMP的理解</h2>
+        
+          <a class="article-more-a" href="/2020/2020-06-01-11:45:31/#more">more >></a>
+        
       
 
       
@@ -485,93 +417,10 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="BeeHive框架全面解析——iOS开发主流方案比较"><a href="#BeeHive框架全面解析——iOS开发主流方案比较" class="headerlink" title="BeeHive框架全面解析——iOS开发主流方案比较"></a>BeeHive框架全面解析——iOS开发主流方案比较</h1><p>• <a href="https://xiaozhuanlan.com/topic/4052613897#sectionbeehiveios" target="_blank" rel="noopener">BeeHive框架全面解析——iOS开发主流方案比较</a><br>• <a href="https://xiaozhuanlan.com/topic/4052613897#sectionbeehive" target="_blank" rel="noopener">一、BeeHive是什么？</a><br>• <a href="https://xiaozhuanlan.com/topic/4052613897#sectionbeehive-1" target="_blank" rel="noopener">二、作为框架，BeeHive做了什么工作？</a><br>• <a href="https://xiaozhuanlan.com/topic/4052613897#sectionbeehive-2" target="_blank" rel="noopener">三、BeeHive是怎么做应用代理解耦的？</a><br>• <a href="https://xiaozhuanlan.com/topic/4052613897#sectionbeehive-3" target="_blank" rel="noopener">BeeHive应用代理解耦</a><br>• <a href="https://xiaozhuanlan.com/topic/4052613897#sectionmlsoappdelegate" target="_blank" rel="noopener">MLSOAppDelegate应用代理解耦</a><br>• <a href="https://xiaozhuanlan.com/topic/4052613897#section" target="_blank" rel="noopener">应用代理解耦讨论</a><br>• <a href="https://xiaozhuanlan.com/topic/4052613897#sectionbeehive-4" target="_blank" rel="noopener">四、BeeHive是怎么做模块间调用的？</a><br>• <a href="https://xiaozhuanlan.com/topic/4052613897#sectionbeehive-5" target="_blank" rel="noopener">BeeHive模块调用</a><br>• <a href="https://xiaozhuanlan.com/topic/4052613897#sectionctmediator" target="_blank" rel="noopener">CTMediator模块调用</a><br>• <a href="https://xiaozhuanlan.com/topic/4052613897#section-1" target="_blank" rel="noopener">模块间调用的讨论</a><br>• <a href="https://xiaozhuanlan.com/topic/4052613897#sectionbeehive-6" target="_blank" rel="noopener">五、BeeHive的开发支持功能</a><br>• <a href="https://xiaozhuanlan.com/topic/4052613897#section-2" target="_blank" rel="noopener">六、我们的方案选择</a><br>• <a href="https://xiaozhuanlan.com/topic/4052613897#sectionobjectivecpop" target="_blank" rel="noopener">Objective-C是否适合POP开发？</a><br>• <a href="https://xiaozhuanlan.com/topic/4052613897#section-3" target="_blank" rel="noopener">选择方案</a><br>• <a href="https://xiaozhuanlan.com/topic/4052613897#section-4" target="_blank" rel="noopener">参考文档</a></p>
-<h2 id="一、BeeHive是什么？"><a href="#一、BeeHive是什么？" class="headerlink" title="一、BeeHive是什么？"></a>一、BeeHive是什么？</h2><blockquote>
-<p>BeeHive是用于iOS应用开发的App模块化编程的框架实现方案，吸收了Spring框架Service的理念来实现模块间的API耦合。<br>BeeHive框架代码已在GitHub开源，对这个框架不了解的同学可以先看一下开源库提供的介绍：<a href="https://github.com/alibaba/BeeHive" target="_blank" rel="noopener">BeeHive@github</a>。</p>
-</blockquote>
-<h2 id="二、作为框架，BeeHive做了什么工作？"><a href="#二、作为框架，BeeHive做了什么工作？" class="headerlink" title="二、作为框架，BeeHive做了什么工作？"></a>二、作为框架，BeeHive做了什么工作？</h2><blockquote>
-<p>BeeHive框架提供的功能主要有以下几部分：<br>• 应用代理解耦：解除AppDelegate代理方法中，不同业务代码的耦合。<br>• 模块间调用解耦：解除不同模块间的过度耦合问题，提供更加清晰的调用方案。<br>• 其他开发支持功能</p>
-</blockquote>
-<h2 id="三、BeeHive是怎么做应用代理解耦的？"><a href="#三、BeeHive是怎么做应用代理解耦的？" class="headerlink" title="三、BeeHive是怎么做应用代理解耦的？"></a>三、BeeHive是怎么做应用代理解耦的？</h2><p>AppDelegate中的代码想要解除耦合，说到底还是要将代理事件分发到不同的业务代理类中。<br>在BeeHive之前，我自己用过两种解耦组件：<br>• FRDModuleManager：实现代理中所有方法，简单的将AppDelegate的单路代理改成多路代理。<br>• MLSOAppDelegate：通过runtime的事件转发，将代理协议中的方法进行动态转发，在自己代码中没有实现所有代理方法。<br>不知道还有没有其他的开源组件，单论以上两种，MLSOAppDelegate应该算是FRDModuleManager的增强版，所以下面我们把MLSOAppDelegate的方案来和BeeHive的方案进行比较。</p>
-<blockquote>
-<p>笔者说明：一般应用代理解耦的文章会将代理事件分发到的类称之为模块module，但是为了和下部分“模块间调用”中的模块概念区分，我们就将应用代理解耦中常用的Module称之为“模块代理类”。</p>
-</blockquote>
-<h3 id="BeeHive应用代理解耦"><a href="#BeeHive应用代理解耦" class="headerlink" title="BeeHive应用代理解耦"></a>BeeHive应用代理解耦</h3><p>统一基类 + 全局上下文参数 + 事件二次分发<br>BeeHive提供了统一的AppDelegate基类<code>BHAppDelegate</code>，所有代理事件的参数全部保存到全局上下文对象<code>BHContext</code>中，由管理模块代理类的<code>BHModuleManager</code>从<code>BHContext</code>里把参数取出来然后通过<code>BHModuleEventType</code>枚举类型进行二次分发。<br>将模块代理类注册进<code>BHModuleManager</code>，BeeHive提供了多种方法：</p>
-<ol>
-<li>在模块代理类<code>+ (void)load</code>方法中调用<code>[BeeHive registerDynamicModule:[self class]]</code>;;</li>
-<li>在模块代理类的implementation中插入宏<code>BH_EXPORT_MODULE(NO)</code>;此方法实质上和上面相同；</li>
-<li>类似Java注解的形式<code>@BeeHiveMod(ShopModule)</code>;</li>
-<li>通过<code>[BHContext shareInstance].moduleConfigName = @&quot;BeeHive.bundle/BeeHive&quot;</code>;指定的文件加载。</li>
-</ol>
-<p><strong>应用代理解耦功能涉及到的类型有：</strong><br>• BHAppDelegate<br>• BHModuleProtocol<br>• BHModuleManager<br>• BHAnnotation<br>• BHContext</p>
-<p><strong>优点：</strong></p>
-<ol>
-<li>业务代码的AppDelegate只要继承基类，不需要实现具体的代理方法；</li>
-<li>扩展了模块生命周期，增加了modSetUp、modInit和modSplash方法；</li>
-<li>模块代理类在业务代码中注册或者模块代理类自动注册时，会按照Level和Priority进行排序，模块代理类被调用的顺序可控；</li>
-<li>模块代理类支持异步加载；</li>
-<li>支持自定义事件。</li>
-</ol>
-<p><strong>不足：</strong></p>
-<ol>
-<li>因为有统一基类，对业务代码有侵入；</li>
-<li>因为BeeHive对AppDelegate方法进行了二次封装，所以当系统代理方法增加、删除、变动时，BeeHive需要同步修改；</li>
-<li>通过Level和Priority进行模块代理类的排序，其实质上存在逻辑耦合；</li>
-<li>未支持UIResponder中的事件；</li>
-</ol>
-<h3 id="MLSOAppDelegate应用代理解耦"><a href="#MLSOAppDelegate应用代理解耦" class="headerlink" title="MLSOAppDelegate应用代理解耦"></a>MLSOAppDelegate应用代理解耦</h3><p>统一基类 + 事件转发<br>该组件提供了基类<code>MLSOAppDelegate</code>，基类使用<code>forwardInvocation</code>将接收到的方法全部转发到<code>MLAppServiceManager</code>管理的所有模块代理类列表中。<br>注册模块代理类，该组件也提供了多个方法：</p>
-<ol>
-<li>通过<code>MLAppServiceManager</code>的<code>registerServiceWithPlistFile</code>方法加载配置文件；</li>
-<li>在模块代理类<code>+ (void)load</code>方法中调用<code>registerService</code>方法;</li>
-<li>通过<code>ML_EXPORT_SERVICE</code>宏定义自动注册；实质与上一种相同；<br>优点：</li>
-<li>业务代码的AppDelegate只要继承基类，不需要实现代理方法；</li>
-<li>现有代理协议的方法增减变动时不需要同步修改；</li>
-<li>通过配置文件主动注册时，调用顺序可控；<br>不足：</li>
-<li>需要支持新的协议时，需要同步修改；比如iOS10系统的推送；</li>
-<li>在load方法内自动注册时，调用顺序不可控；</li>
-<li>未分发UIResponder中的事件；</li>
-</ol>
-<h3 id="应用代理解耦讨论"><a href="#应用代理解耦讨论" class="headerlink" title="应用代理解耦讨论"></a>应用代理解耦讨论</h3><p>通过上面的比较，两种方案的区别主要在于模块代理类的执行顺序以及对代理方法变动的兼容性两方面。</p>
-<h4 id="模块代理类的执行顺序"><a href="#模块代理类的执行顺序" class="headerlink" title="模块代理类的执行顺序"></a>模块代理类的执行顺序</h4><p>模块代理类的执行顺序只是个逻辑问题，相对来说BeeHive的方案比较满足我们的业务要求。<br>不过我们在此不妨思考一下，模块代理类的执行顺序实质上是个什么问题。<br>所谓的顺序，我们拆分到最细的层次上，其实就是两个模块代理类谁先谁后的问题。那么，执行顺序的问题，实质上就是模块代理类之间的耦合问题。<br>耦合关系一般是两者之间的，所以解决问题时具体方案涉及的对象一旦超出了两者，那么就存在冗余的耦合。而通过Priority进行控制就是这样的方案。<br>比如，现有A，B，C，D四个模块，其中B依赖A，C依赖B，D依赖A，那么现在设定他们的Priority分别为A=1，B=10，C=20，D=30（数字越小优先级越高）。<br>但是有一天，因为新的需求，B模块也需要依赖D模块了。那么按照Priority的规则，我们需要调整B的Priority，使之大于D的Priority，比如设置B=40。<br>但这样设置的话就破坏了C依赖B的关系。<br>当然，我们也可以将D的Priority设置为比B更小，这样就不会有问题。<br>但是我们在这里举这个例子的目的在于解释，Priority的方案会使得模块间的依赖关系更加复杂，两个模块间的依赖关系可能影响到其他模块间的依赖关系。<br>那么，如果回归到最理想的状态，我们是否可以通过模块代理类间的耦合关系指定相对的加载顺序，类似Masonry这样的布局组件。比如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">• + (void)load &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">• [[FWModuleDelegateManager sharedInstance] registeModuleDelegate:[FWPushModuleDelegate class] forName:@&quot;FWPush&quot; after:@[@&quot;FWUserCenterModuleDelegate&quot;, @&quot;FWLocationModuleDelegate&quot;]];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">• </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">• [[FWModuleDelegateManager sharedInstance] registeModuleDelegate:[FWPushModuleDelegate class] forName:@&quot;FWPush&quot; forIndex:0];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">• &#125;</span></pre></td></tr></table></figure>
-<p>当然，我们上面的代码只是个简单的设想，实际的实现可能会更加复杂，比如，如果考虑到BeeHive支持的模块代理类异步加载的特性，那么这个相对执行顺序的方案可能就需要通过信号量或者队列的手段来确保不同线程下模块代理类的执行顺序了。在这里，本文暂时只做讨论，不给出实际方案。</p>
-<h4 id="代理方法变动的兼容性"><a href="#代理方法变动的兼容性" class="headerlink" title="代理方法变动的兼容性"></a>代理方法变动的兼容性</h4><p>如果说上一个问题实际上只是个逻辑问题，并不存在技术可能性上的是与非。那么对代理方法变动的兼容性，则是技术方案的实质所在。以BeeHive的方案，实际上是抛弃了灵活性的考量，这样限制了它在这一点上的优化空间。</p>
-<h2 id="四、BeeHive是怎么做模块间调用的？"><a href="#四、BeeHive是怎么做模块间调用的？" class="headerlink" title="四、BeeHive是怎么做模块间调用的？"></a>四、BeeHive是怎么做模块间调用的？</h2><p>模块间调用解决的是模块间的依赖耦合问题。常见的处理方案有以下三种：<br>• URLRouter：将不同的模块定义成为不同的URL，通过URL的形式进行跨模块调用。<br>• Target-Action：利用OC的runtime能力，动态的调用指定Target的action；<br>• ProtocolClass：模块实现指定的协议，依赖方通过协议对象以及协议方法对模块进行访问；<br>路由的方案限制比较多，我们在此比较一下后两种方案。<br>BeeHive模块调用<br>ProtocolClass / Router<br>BeeHive的模块都必须实现一个继承自<code>BHServiceProtocol</code>的唯一自定义协议，此协议中定义自己想要公开的方法，是用来给其他模块调用使用的。<br>每个模块的自定义协议可以统一放在一个pod中，以中介者模式解决网状依赖的问题。而且该pod只会被具体的模块依赖，并不会依赖具体的模块。完全符合面向对象的依赖倒置原则——抽象不应该依赖于具体实现，具体实现应该依赖于抽象。<br>将模块注册进入<code>BHServiceManager</code>中，BeeHive也提供了多种方法：</p>
-<ol>
-<li>在模块代理类中手动注册<code>[[BeeHive shareInstance] registerService:@protocol(TradeServiceProtocol) service:[BHTradeViewController class]];</code>;</li>
-<li>通过注解的形式注册<code>@BeeHiveService(HomeServiceProtocol,BHViewController)</code>;</li>
-<li>通过<code>[BHContext shareInstance].serviceConfigName = @&quot;BeeHive.bundle/BHService&quot;</code>;指定的配置文件加载。<br>BeeHive另外还提供了通过路由BHRouter进行模块间调用的方案。<br>模块间调用涉及的类型有：<br>BHServiceProtocol<br>BHServiceManager<br>BHRouter</li>
-</ol>
-<p><strong>不足：</strong></p>
-<ol>
-<li>有基础协议，存在代码侵入，但其中并未封装通用性的协议方法；</li>
-<li><code>BHServiceManager</code>注册时通过协议识别模块，因此每个模块必须定义自己的协议；</li>
-<li>通过配置文件注册时，未提供属性注入；</li>
-<li>因为模块通过BeeHive统一注册后创建，所以Service之间的依赖，可能导致Service在注册前使用；因而需要控制Service的加载顺序；<br>优点：</li>
-<li>模块不存在或未注册时，不会获取到实例，可以灵活处理；<br>另外，因为暂时没有弄清BHRouter的使用场景，我实在分不清“支持Router式调用”这是BeeHive框架的优点还是不足。</li>
-</ol>
-<h3 id="CTMediator模块调用"><a href="#CTMediator模块调用" class="headerlink" title="CTMediator模块调用"></a>CTMediator模块调用</h3><p><strong>Target-Action</strong><br><code>CTMediator</code>的方案中，每个模块需要定义自己的Target对象，作为公共方法声明，其中定义的Action都是给其他模块调用使用的。<br>为了解决网状依赖的问题，可以为每个模块定义一个<code>CTMediator</code>的category对Target进行二次封装，这些category放在统一的pod中，作为一个中介者。按正常的逻辑，这个统一pod是会依赖具体的模块的，但是CTMediator的方案中，是利用runtime调用对应的Target-Action，所以解除了直接的代码依赖。<br>不足：</p>
-<ol>
-<li>Target无基础类型，缺乏抽象，模块需要自己实现Target-Action;</li>
-<li>当模块不存在时，无法提前处理，只能设置默认处理方法；</li>
-<li>category中都是硬编码，修改时会比较麻烦。<br>优点：</li>
-<li>Target无基础类型，所以无侵入性；</li>
-<li>模块不需注册;</li>
-<li>两层封装，保证灵活性；</li>
-<li>和应用间的Route跳转可以更灵活的对接；</li>
-</ol>
-<h3 id="模块间调用的讨论"><a href="#模块间调用的讨论" class="headerlink" title="模块间调用的讨论"></a>模块间调用的讨论</h3><p>这个模块间调用的问题其实就是“依赖倒置”所解决的问题。BeeHive的方案应该是依赖倒置原则的标准实现方案，而CTMediator则是充分使用了OC的特性剑走偏锋。<br>而CTMediator之所以需要这样处理，实质上就是因为它追求代码的无侵入性以及免注册，所以Target没有统一的基础类型。如果增加一个基础的Target类，同样可以像BeeHive的方案一样，完美的符合依赖倒置原则。<br>而哪个适合你，就要看自己的取舍了。</p>
-<h2 id="五、BeeHive的开发支持功能"><a href="#五、BeeHive的开发支持功能" class="headerlink" title="五、BeeHive的开发支持功能"></a>五、BeeHive的开发支持功能</h2><p>• 环境切换：BHContext类中定义了env用来标识当前的环境类型，只不过这个功能太简单了些。<br>• 时间统计工具：BHTimeProfiler<br>• 看门狗，用来检测主线程占用：BHWatchDog<br>因为本次重点是讨论框架，所以这些内容暂不详述。</p>
-<h2 id="六、我们的方案选择"><a href="#六、我们的方案选择" class="headerlink" title="六、我们的方案选择"></a>六、我们的方案选择</h2><h3 id="Objective-C是否适合POP开发？"><a href="#Objective-C是否适合POP开发？" class="headerlink" title="Objective-C是否适合POP开发？"></a>Objective-C是否适合POP开发？</h3><p>POP：Protocol-Oriented Programming<br>在看了这么多框架的优劣后，想请大家思考个问题：Objective-C开发是否适合面向协议编程？<br>我个人觉得POP的关键点有两点，一是声明与实现的隔离，二是对于多态的支持。<br>而对于Objective-C来说，声明与实现的隔离，这在.h与.m中已经实现，虽然只是表面的，并没有做到完全解耦；但很多时候的封装性已经可以满足。<br>而对于多态的支持，很多时候其实就是程序能力的扩展，在这一方面Objective-C是通过Category实现的。<br>因此，OC对于POP似乎没有迫切的需求。</p>
-<h3 id="选择方案"><a href="#选择方案" class="headerlink" title="选择方案"></a>选择方案</h3><p>本着学以致用的原则，我们如果要开发项目，需要选定一个确定的框架方案，那么综合以上的分析比较，我个人的倾向方案是：<br>基于<code>MLSOAppDelegate</code>进行优化，增加BeeHive的优点（支持顺序设定、异步加载），支持相对顺序 + 基于<code>CTMediator</code>进行优化（增加Target预检测），业务层增加部分抽象<br>以上是我的答案，如果是你，你会选择什么呢？</p>
-<p>参考文档</p>
-<ol>
-<li><a href="https://mp.weixin.qq.com/s?__biz=MzUxMzcxMzE5Ng==&mid=2247488305&idx=1&sn=0f0a2e4d5febe3024adf0578f092b020&source=41#wechat_redirect" target="_blank" rel="noopener">BeeHive，一次iOS模块化解耦实践</a></li>
-<li><a href="https://www.jianshu.com/p/24f6299ebe82" target="_blank" rel="noopener">BeeHive —— 一个优雅但还在完善中的解耦框架</a></li>
-<li><a href="https://yq.aliyun.com/error/notfound" target="_blank" rel="noopener">iOS大型项目解耦方案有难度？BeeHive设计优化来帮助</a></li>
-<li><a href="https://github.com/alibaba/BeeHive" target="_blank" rel="noopener">BeeHive@github</a></li>
-</ol>
-
+        <h1 id="BeeHive框架全面解析——iOS开发主流方案比较"><a href="#BeeHive框架全面解析——iOS开发主流方案比较" class="headerlink" title="BeeHive框架全面解析——iOS开发主流方案比较"></a>BeeHive框架全面解析——iOS开发主流方案比较</h1>
+        
+          <a class="article-more-a" href="/2020/2020-05-23-16:27:28/#more">more >></a>
+        
       
 
       
@@ -655,20 +504,10 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="组件、插件、模块、子应用、库、框架等概念辨析"><a href="#组件、插件、模块、子应用、库、框架等概念辨析" class="headerlink" title="组件、插件、模块、子应用、库、框架等概念辨析"></a>组件、插件、模块、子应用、库、框架等概念辨析</h1><p>网上有许多讲组件化、模块化等概念的文章，但大家一般都是将这两个概念混为一谈的，并没有加以区分。而且实际上许多人对于组件、插件、模块、子应用等概念的区别也不甚明了，甚至于许多博客文章专门解说这几个概念都有些谬误。<br>之前已经写了一篇文章专门对组件和模块两个概念进行辨析，现在我们对于更多的概念在更高的层次上进行辨析。<br>想分清这几个概念我觉得结合一下软件的渐进式开发场景更容易理解。但是下面的篇幅会比较长，所以按惯例还是先说结论，不耐烦的同学可以先看：</p>
-<h2 id="1-概念区别"><a href="#1-概念区别" class="headerlink" title="1.概念区别"></a>1.概念区别</h2><p>• 组件：代码重用，功能相对单一或者独立，无统一接口。组件化开发的成果是基础库和公共组件。<br>• 插件：近乎组件，有统一接口<br>• 模块：高内聚，松耦合，功能相对复杂，有多个统一接口。模块化开发的基础是框架。<br>• 子系统：高于模块，需要生命周期管理。子系统开发的基础是容器。</p>
-<h3 id="1-1-组件和插件"><a href="#1-1-组件和插件" class="headerlink" title="1.1.组件和插件"></a>1.1.组件和插件</h3><p>插件的概念比较形象，一般存在一个“插拔”过程，所以要求可插拔的插件有一个相同的接口（这里所说的接口只是概念上的接口，即调用方法及参数等）。而组件是不存在这个相同接口的。<br>拿我们最常见的网络请求功能举例，无论哪种开发语言，github上可能都有多种网络请求组件，那么对于一个项目而言，从一个网络组件ComponentA切换为另一个网络组件ComponentB是基本无法做到调用方法不改动的。<br>而如果把网络请求组件插件化，即在组件外层抽象一层统一化的调用接口NetworkInterface，然后将当前使用网络请求组件ComponentA包装成实现该接口的网络请求插件PluginA。那么如果以后需要将使用的ComponentA切换为ComponentB，那么只需要将ComponentB包装成PluginB并插入到应用中即可。实际调用时，业务代码还是调用NetworkInterface，不用做任何修改。<br>从上面这个例子我们可以看出，插件和组件的实质区别就在于通过统一接口隔绝业务代码对于组件的直接依赖，这也是我们常听到的所谓的“项目开发时应该把第三方组件封装一下再用”。</p>
-<h3 id="1-2-组件和模块"><a href="#1-2-组件和模块" class="headerlink" title="1.2.组件和模块"></a>1.2.组件和模块</h3><p>两者的实质区别在于：组件化开发是纵向分层，模块化开发是横向分块。<br>所以，模块化并没有要求一定组件化，就是说进行模块化拆分时你可以完全不考虑代码重用，只是把同一业务的代码做内聚整合成不同的模块。只不过这样得到的成果相对简单，我们一般不会这样而已。<br>组件化就比如项目中公共的alert框，它的出现其实是基于代码复用的目的，所以我们把它封装，并给多个地方使用。而模块化就比如一个资讯列表界面，它本身可能只在一个地方使用，没有复用的需求，但我们也要把它封装成模块，这是高内聚的要求，我们不应该把资讯相关的代码在项目中放得到处都是。<br>但像这样的简单模块只是轻模块，统一接口较少。而统一定义的接口越多，其实和主应用的耦合就越高，也便是重模块。<br>而路由就是解决高耦合问题的，不过耦合问题不是模块化开发的需求，只不过我们一般都会在这个时间考虑这一事情而已，就像我们不会只做模块化开发同时不做组件化开发一样。</p>
-<h3 id="1-3-模块和子应用"><a href="#1-3-模块和子应用" class="headerlink" title="1.3.模块和子应用"></a>1.3.模块和子应用</h3><p>模块和子应用的区别与组件和插件的区别有点像，都在于一个统一接口。<br>子应用我们不常提，但其实并不少见，像微信小程序，钉钉中的第三方应用还有企业OA应用中集成的周边功能模块都应该属于子应用的概念。<br>对于模块而言，它暴露给外部调用的接口一般很少，最常见的就是上面提到的路由规则，相当于可以让外部通过路由规则展示它。而子应用需要的就不只是一个展示接口，它可能需要动态的控制子应用的生命周期，以及其他功能上的信息交互（比如，账户信息的同步），甚至于要做到类似插件那样的插拔效果。<br>所以子应用必然是接口化的，而模块则没有硬性的要求。</p>
-<h3 id="1-4-库和框架"><a href="#1-4-库和框架" class="headerlink" title="1.4.库和框架"></a>1.4.库和框架</h3><p>除了上面这四种概念，还有两个是我们开发中常遇到的：库和框架。<br>库，或者基础库，概念上偏近于各种工具积累成的集合，是软件代码的层面是分层的概念，所以对应组件化。基础库甚至可以看做是一个大的组件。<br>而框架顾名思义是结构化的，是相对整体的一个概念，所以应用于模块化，甚至是子应用化。<br>比如在iOS中，RAC是一个库，而基于此的一套MVVM的具体实现成果（单页面的文件结构，多页面的交互等等）才叫框架。因为框架本身就有架构思想在里面。</p>
-<h2 id="2-渐进式辨析"><a href="#2-渐进式辨析" class="headerlink" title="2.渐进式辨析"></a>2.渐进式辨析</h2><p>上面讲了一下几个概念的区别，当然这几个概念在服务端开发和客户端开发领域可能有些微差别，我们就不深究了。想要更深入的了解这些概念的区别，我准备拿一个渐进式开发移动端项目的例子进行辨析。<br>首先我们定义一个虚拟的产品——一款知识类应用，包含常见的资讯、问答、学院、直播等功能。<br>接下来我们从设计的角度逐步拆分这个产品。</p>
-<h3 id="2-1原始态"><a href="#2-1原始态" class="headerlink" title="2.1原始态"></a>2.1原始态</h3><p>如果开发时没有考虑任何组件化、模块化开发，那么此应用的所有功能都是堆积在一起的，总结起来就是代码特点就是高耦合，低内聚，无重用。<br>面对这样的一堆代码，技术经理可能要让你做一下代码重构，这就是你下一步的工作。</p>
-<h3 id="2-2组件"><a href="#2-2组件" class="headerlink" title="2.2组件"></a>2.2组件</h3><p>那么你进行代码重构的第一步是什么呢？<br>答：将工程中重复的代码合并成为一份，也就是重用。<br>如果让我们来看组件化开发的定义，它的着重点就是代码重用。那这一步最后的结果就是提炼出一个个组件给不同的功能使用。<br>这里我们可以看一下其中的依赖关系：具体功能依赖提炼出来的组件，组件本身之间可能也有依赖关系，但一般不多。所以我们总结组件化开发的原则就是高重用，低耦合。当然这只是相对而言。<br>基于这样的认识，我们甚至于可以把资讯、问答、学院、直播等功能封装成组件，只不过这些组件比较大，依赖可能多些，不过本质上没有多少区别。<br>就在你进行重构的过程中，这时需求来了：运营人员要求首页顶部的九宫格样式工具栏可动态配置，通过服务端数据修改显示功能，并调用对应的功能页面。</p>
-<h3 id="2-3插件"><a href="#2-3插件" class="headerlink" title="2.3插件"></a>2.3插件</h3><p>代码重构从来不是超然物外的，在进行过程中接到新需求也是常有的事情。那么，对于这样一个需求，应该怎么考虑呢？<br>这个动态化需求很普遍，只不过这里有一个隐性要求——既然需求中要求功能动态配置，那么调用功能的地方就不知道功能的具体实现。<br>所以最终的方案中被调用功能必须有统一接口。我们这里说的接口只是编程领域的抽象概念，并非是指具体语言的interface或者protocol。<br>而有了这一统一接口，其配置功能其实就是“插拔”过程了。这样的成果实质上已经是插件了。<br>插件可以解释成可插拔式组件，它的核心就是不同功能实现提供统一接口。<br>项目中插件化的例子其实也不少，再举一个例子：比如资讯和问答功能使用的弹框样式不同，但是在两个功能内部其弹框样式是一致的。<br>面对这样的问题，你在重构时可能会简单的封装出两个组件AlertA和AlertB，分别给两个功能使用。这样确实很便捷，而且适合当下的场景，但是从设计或者长远发展的角度上来考虑，如果资讯里面弹框样式需要换成和问答一样，甚至其他样式，那么基于现有的方法，你就需要修改资讯功能中所有调用弹框的地方。<br>所以插件化是解决这个问题的好办法：定义AlertInterface接口给具体业务功能使用，并实现AlertPluginA、AlertPluginB，在外面给不同的功能指定不能的插件即可。 </p>
-<h3 id="2-4模块"><a href="#2-4模块" class="headerlink" title="2.4模块"></a>2.4模块</h3><p>这时候项目的组件化拆分完成，技术经理说以后不同的模块会交由不同的人来维护，各人维护各自负责的代码。<br>这个需求初看上去只是项目管理上的需求，但实际执行时若资讯、问答、学院、直播分别由四个人维护，那么他们虽然大部分代码是相互隔离的，但仍然会有相当一部分代码耦合在一起，有时候会同时修改同一个代码文件。<br>这时候要做的自然就是模块化。<br>为什么是模块化呢？按照模块的定义，它是以关注点进行划分的，而关注点说到底就是功能，也就是说根据我们上面的例子，资讯、问答、学院、直播可以分成不同的模块。<br>我们最开始定义这个虚拟产品的时候说，它有三个特点——高耦合、低内聚、无重用。而第一点组件化开发主要是解决了重用问题，提升了部分内聚，而耦合问题则没有涉及。<br>所以说我们上面可以将这个产品在逻辑上划分为资讯、问答、学院、直播四个模块，但在代码层面上它们却不是四个模块，因为它们的代码都是混杂在一起的。比如产品首页，可能推荐了部分资讯、显示了热门问答、推送了目前的直播，而这些功能的代码则是写在一起的；再比如程序启动的时候，这四个模块都需要初始化一些数据，而初始化数据的代码也是写在一起的。<br>而模块化开发就是为了解决这一问题，即提高内聚，将分属同一模块代码放到一起；降低耦合，将不同模块间的耦合程度弱化。<br>高内聚是这一步的目标。但现状是有许多地方会用到多个模块，比如启动的时候会调用四个模块，首页会展示三个模块的界面。如果要高内聚，那么必然需要这些模块为不同的场景提供相同的方法，这就是说所有模块要实现同一套多个接口。<br>而低耦合其实并非是模块化开发的要求，其实更多时候是基于产品上的动态化要求，所以最常见的解决方案就是路由机制。<br>讲到这里，我们可以看到模块化和组件化的区别就已经很明显了。<br>对于一般应用而言，代码设计优化到这一步就很好了，无论是代码可读性、可维护性、工作协作效率都得到了保障。不过为了讲到我们上面所说的所有概念，我们不妨皮一下，给自己提点需求：<br>产品经理想把学院模块单独提出来做一个APP，但是因为技术经理反映开发资源有限，不能给这个APP配备独立的开发人员，所以最终的结果是这个APP的功能和原应用中的学院模块使用同一套代码，且功能相同。</p>
-<h3 id="2-5子应用"><a href="#2-5子应用" class="headerlink" title="2.5子应用"></a>2.5子应用</h3><p>对于开发人员来说，这也不能算多困难的需求，只需要再创建一个新工程，将学院模块代码引用过来并显示即可。<br>这个方案简单直接，即便后面再把直播分离出单独APP我也可以这样来做。<br>但是，有没有觉得这个方案和我们之前提到的Alert的例子有些神似，在这个方案中，新的工程必然直接耦合具体的模块代码，你需要在里面编写很多初始化代码。而这样的代码在单独的APP中和原APP中是相当类似的。<br>按照《重构》一书中的提法，这是明显的坏味道，我们应该在工程和模块代码之间抽象出一层接口，使两者解除直接耦合，这样我们甚至可以做到只需要配置就可以将一个模块变成一个新的APP。<br>(或许在这个例子中，有些过度设计了，但是原谅我举不出更合情理的例子TAT)<br>上面方案的成果，实际上就把学院模块编程了学院子应用，而这个子应用被原APP和新的独立APP所使用。<br>在概念上，子应用比模块的范围更大，子应用要求能在主应用里运行，也要求必要时可以自己运行，那么就必然要求子应用要提供生命周期接口，和主应用必要时保持一致。<br>其实在上面一步的模块化开发中，有的时候也会有生命周期接口的要求，只不过并非强制，而子应用的设计中则是必须要考虑的。 </p>
-<h2 id="3-总结"><a href="#3-总结" class="headerlink" title="3.总结"></a>3.总结</h2><p>到此，我们就把组件、插件、模块、子应用四个不同程度的设计概念异同讲完了，希望读者能有所得。文章中若有其他不足之处，恳请不吝赐教。</p>
-
+        <h1 id="组件、插件、模块、子应用、库、框架等概念辨析"><a href="#组件、插件、模块、子应用、库、框架等概念辨析" class="headerlink" title="组件、插件、模块、子应用、库、框架等概念辨析"></a>组件、插件、模块、子应用、库、框架等概念辨析</h1>
+        
+          <a class="article-more-a" href="/2020/2020-05-23-16:26:15/#more">more >></a>
+        
       
 
       
@@ -1152,15 +991,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color3">随笔</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color4">组件化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color5">设计原则</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color3">随笔</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1169,6 +1004,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color4">UML</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color4">组件化</a>
               </li>
             
             <div class="clearfix"></div>

@@ -8,15 +8,15 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>架构概念 | X的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="组件、插件、模块、子应用、库、框架等概念辨析网上有许多讲组件化、模块化等概念的文章，但大家一般都是将这两个概念混为一谈的，并没有加以区分。而且实际上许多人对于组件、插件、模块、子应用等概念的区别也不甚明了，甚至于许多博客文章专门解说这几个概念都有些谬误。之前已经写了一篇文章专门对组件和模块两个概念进行辨析，现在我们对于更多的概念在更高的层次上进行辨析。想分清这几个概念我觉得结合一下软件的渐进式开发">
+  <meta name="description" content="组件、插件、模块、子应用、库、框架等概念辨析">
 <meta name="keywords" content="架构概念">
 <meta property="og:type" content="article">
 <meta property="og:title" content="架构概念">
 <meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;2020-05-23-16:26:15&#x2F;index.html">
 <meta property="og:site_name" content="X的博客">
-<meta property="og:description" content="组件、插件、模块、子应用、库、框架等概念辨析网上有许多讲组件化、模块化等概念的文章，但大家一般都是将这两个概念混为一谈的，并没有加以区分。而且实际上许多人对于组件、插件、模块、子应用等概念的区别也不甚明了，甚至于许多博客文章专门解说这几个概念都有些谬误。之前已经写了一篇文章专门对组件和模块两个概念进行辨析，现在我们对于更多的概念在更高的层次上进行辨析。想分清这几个概念我觉得结合一下软件的渐进式开发">
+<meta property="og:description" content="组件、插件、模块、子应用、库、框架等概念辨析">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2020-05-23T08:35:40.743Z">
+<meta property="og:updated_time" content="2020-07-02T10:51:56.640Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="X的博客" type="application/atom+xml">
@@ -191,7 +191,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="组件、插件、模块、子应用、库、框架等概念辨析"><a href="#组件、插件、模块、子应用、库、框架等概念辨析" class="headerlink" title="组件、插件、模块、子应用、库、框架等概念辨析"></a>组件、插件、模块、子应用、库、框架等概念辨析</h1><p>网上有许多讲组件化、模块化等概念的文章，但大家一般都是将这两个概念混为一谈的，并没有加以区分。而且实际上许多人对于组件、插件、模块、子应用等概念的区别也不甚明了，甚至于许多博客文章专门解说这几个概念都有些谬误。<br>之前已经写了一篇文章专门对组件和模块两个概念进行辨析，现在我们对于更多的概念在更高的层次上进行辨析。<br>想分清这几个概念我觉得结合一下软件的渐进式开发场景更容易理解。但是下面的篇幅会比较长，所以按惯例还是先说结论，不耐烦的同学可以先看：</p>
+        <h1 id="组件、插件、模块、子应用、库、框架等概念辨析"><a href="#组件、插件、模块、子应用、库、框架等概念辨析" class="headerlink" title="组件、插件、模块、子应用、库、框架等概念辨析"></a>组件、插件、模块、子应用、库、框架等概念辨析</h1><a id="more"></a>
+<p>网上有许多讲组件化、模块化等概念的文章，但大家一般都是将这两个概念混为一谈的，并没有加以区分。而且实际上许多人对于组件、插件、模块、子应用等概念的区别也不甚明了，甚至于许多博客文章专门解说这几个概念都有些谬误。<br>之前已经写了一篇文章专门对组件和模块两个概念进行辨析，现在我们对于更多的概念在更高的层次上进行辨析。<br>想分清这几个概念我觉得结合一下软件的渐进式开发场景更容易理解。但是下面的篇幅会比较长，所以按惯例还是先说结论，不耐烦的同学可以先看：</p>
 <h2 id="1-概念区别"><a href="#1-概念区别" class="headerlink" title="1.概念区别"></a>1.概念区别</h2><p>• 组件：代码重用，功能相对单一或者独立，无统一接口。组件化开发的成果是基础库和公共组件。<br>• 插件：近乎组件，有统一接口<br>• 模块：高内聚，松耦合，功能相对复杂，有多个统一接口。模块化开发的基础是框架。<br>• 子系统：高于模块，需要生命周期管理。子系统开发的基础是容器。</p>
 <h3 id="1-1-组件和插件"><a href="#1-1-组件和插件" class="headerlink" title="1.1.组件和插件"></a>1.1.组件和插件</h3><p>插件的概念比较形象，一般存在一个“插拔”过程，所以要求可插拔的插件有一个相同的接口（这里所说的接口只是概念上的接口，即调用方法及参数等）。而组件是不存在这个相同接口的。<br>拿我们最常见的网络请求功能举例，无论哪种开发语言，github上可能都有多种网络请求组件，那么对于一个项目而言，从一个网络组件ComponentA切换为另一个网络组件ComponentB是基本无法做到调用方法不改动的。<br>而如果把网络请求组件插件化，即在组件外层抽象一层统一化的调用接口NetworkInterface，然后将当前使用网络请求组件ComponentA包装成实现该接口的网络请求插件PluginA。那么如果以后需要将使用的ComponentA切换为ComponentB，那么只需要将ComponentB包装成PluginB并插入到应用中即可。实际调用时，业务代码还是调用NetworkInterface，不用做任何修改。<br>从上面这个例子我们可以看出，插件和组件的实质区别就在于通过统一接口隔绝业务代码对于组件的直接依赖，这也是我们常听到的所谓的“项目开发时应该把第三方组件封装一下再用”。</p>
 <h3 id="1-2-组件和模块"><a href="#1-2-组件和模块" class="headerlink" title="1.2.组件和模块"></a>1.2.组件和模块</h3><p>两者的实质区别在于：组件化开发是纵向分层，模块化开发是横向分块。<br>所以，模块化并没有要求一定组件化，就是说进行模块化拆分时你可以完全不考虑代码重用，只是把同一业务的代码做内聚整合成不同的模块。只不过这样得到的成果相对简单，我们一般不会这样而已。<br>组件化就比如项目中公共的alert框，它的出现其实是基于代码复用的目的，所以我们把它封装，并给多个地方使用。而模块化就比如一个资讯列表界面，它本身可能只在一个地方使用，没有复用的需求，但我们也要把它封装成模块，这是高内聚的要求，我们不应该把资讯相关的代码在项目中放得到处都是。<br>但像这样的简单模块只是轻模块，统一接口较少。而统一定义的接口越多，其实和主应用的耦合就越高，也便是重模块。<br>而路由就是解决高耦合问题的，不过耦合问题不是模块化开发的需求，只不过我们一般都会在这个时间考虑这一事情而已，就像我们不会只做模块化开发同时不做组件化开发一样。</p>
@@ -487,15 +488,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color3">随笔</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color4">组件化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color5">设计原则</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color3">随笔</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -504,6 +501,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color4">UML</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color4">组件化</a>
               </li>
             
             <div class="clearfix"></div>

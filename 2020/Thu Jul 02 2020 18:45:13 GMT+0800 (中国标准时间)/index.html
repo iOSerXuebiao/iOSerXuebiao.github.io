@@ -6,18 +6,21 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>六大设计原则 | X的博客</title>
+  <title>iOS 内存布局&amp;内存管理方案 | X的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="1、单一职责原则">
-<meta name="keywords" content="设计原则">
+  <meta name="description" content="##内存布局-五大区">
+<meta name="keywords" content="iOS">
 <meta property="og:type" content="article">
-<meta property="og:title" content="六大设计原则">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12-06-15:11:26&#x2F;index.html">
+<meta property="og:title" content="iOS 内存布局&amp;内存管理方案">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;Thu%20Jul%2002%202020%2018:45:13%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)&#x2F;index.html">
 <meta property="og:site_name" content="X的博客">
-<meta property="og:description" content="1、单一职责原则">
+<meta property="og:description" content="##内存布局-五大区">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2020-03-23T07:42:43.234Z">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;Thu%20Jul%2002%202020%2018:45:13%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)&#x2F;1593686901942.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;Thu%20Jul%2002%202020%2018:45:13%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)&#x2F;1593686932245.jpg">
+<meta property="og:updated_time" content="2020-07-03T02:22:49.243Z">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;Thu%20Jul%2002%202020%2018:45:13%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)&#x2F;1593686901942.jpg">
   
     <link rel="alternative" href="/atom.xml" title="X的博客" type="application/atom+xml">
   
@@ -171,52 +174,90 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-六大设计原则" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-iOS-内存布局-内存管理方案" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      六大设计原则
+      iOS 内存布局&amp;内存管理方案
     </h1>
   
 
         
-        <a href="/2019/12-06-15:11:26/" class="archive-article-date">
-  	<time datetime="2019-12-06T07:11:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-06</time>
+        <a href="/2020/Thu%20Jul%2002%202020%2018:45:13%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)/" class="archive-article-date">
+  	<time datetime="2020-07-02T10:45:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-02</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="1、单一职责原则"><a href="#1、单一职责原则" class="headerlink" title="1、单一职责原则"></a>1、单一职责原则</h2><a id="more"></a>
-<p>单一职责原则的英文名称是Single Responsibility Principle ，简称SRP。这个设计原则备受争议，只要你想和别人争执、怄气或者是吵架，这个原则是屡试不爽的。</p>
-<p>定义：There should never be more than one reason for a class to change.<br>     应该有且仅有一个原因引起类的变更。</p>
-<p>理解：不同的类具备不同的职责，各司其职。做系统设计时，如果发现有一个类拥有了两种职责，那么就要问一个问题：可以将这个类分成两个类吗？如果真的有必要，那就分开，千万不要让一个类干的事情太多。</p>
-<p>优点：类的复杂性降低，实现什么职责都有清晰明确的定义；可读性提高，复杂性降低，那当然可读性提高了；可维护性提高，可读性提高，那当然更容易维护了；变更引起的风险降低，变更是必不可少的，如果接口的单一职责做得好，一个接口修改只对相应的实现类有影响，对其他的接口无影响，这对系统的扩展性、维护性都有非常大的帮助。</p>
-<p>总结：一个类只承担一个职责。单一职责原则提出了一个编写程序的标准，用”职责“或”变化原因“来衡量接口或类设计得是否优良，但是”职责“和”变化原因“都是不可度量的，因项目而异，因环境而异。</p>
-<h2 id="2、里氏替换原则"><a href="#2、里氏替换原则" class="headerlink" title="2、里氏替换原则"></a>2、里氏替换原则</h2><p>它有两种定义：<br>第一种定义，也是最正宗的定义：If for each object o1 of type S there is an object o2 of type T such that for all programs P defined in terms of T, the behavior of P is unchanged when o1 is substituted for o2 then S is a subtype of T.<br>(如果对每一个类型为S的对象o1，都有类型为T的对象o2，使得以T定义的所有程序P在所有的对象o1都代换成o2时，程序P的行为没有发生变化，那么类型S是类型T的子类型。)</p>
-<p>第二种定义：Functions that  use pointers or references to base classes must be able to use objects of derived classes without knowing it.<br>(所有引用基类的地方必须能透明地使用其子类的对象。)</p>
-<p>第二个定义是最清晰明确的，通俗点讲，只要父类能出现的地方子类就可以出现，而且替换为子类也不会产生任何错误或异常，使用者可能根本就不需要知道是父类还是子类。但是，反过来就不行了，有子类出现的地方，父类未必就能适用。</p>
-<p>理解：父类可被子类替换，但反之不一定成立。也就是说，代码中可以将父类全部替换为子类，程序不会出现异常，但反过来就不一定了。</p>
-<p>总结：在继承类是，务必重写（override）父类中所有的方法，尤其需要注意父类的protected方法（它们往往是让你重写的），子类尽量不要暴露自己的public方法供外界调用。</p>
-<h2 id="3、依赖倒置原则"><a href="#3、依赖倒置原则" class="headerlink" title="3、依赖倒置原则"></a>3、依赖倒置原则</h2><p>依赖倒置原则（Dependence Inversion Principle, DIP）</p>
-<p>定义：High level modules should not depends upon low level modules.Both should depend upon abstractions.Abstractions should not depend upon details.Details should depend upon abstractions.</p>
-<p>理解：1.高层模块不应该依赖低层模块，两者都应该依赖其抽象；<br>     2.抽象不应该依赖细节；<br>     3.细节应该依赖抽象。<br>     应该面向接口编程，不该面向实现类编程。面向实现类编程相当于就事论事，那是正向依赖；面向接口编程，相当于透过现象看本质，抓住事务的共性，那就是反向依赖，即依赖倒置。</p>
-<p>总结：面向接口编程，提取出事务的本质和共性。</p>
-<h2 id="4、接口隔离原则"><a href="#4、接口隔离原则" class="headerlink" title="4、接口隔离原则"></a>4、接口隔离原则</h2><p>什么是接口呢？它分为两种：<br>实例接口（Object Interface），在Java中声明一个类，然后用new关键字产生一个实例，它是对一个类型的描述，这是一种接口。比如你定义Person这个类，然后使用Person zhangSan =new Person()产生了一个实例，这个实例要遵从的标准就是Person这个类，Person类就是zhangSan的接口。Java中的类也是一种接口。</p>
-<p>类接口（Class Interface），Java中经常使用的interface关键字定义的接口。</p>
-<p>什么是隔离呢？它有两种定义：<br>Clients should not be forced to depend upon interfaces that they don’t use.(客户端不应该依赖它不需要的接口。)<br>The dependency of one class to another one should depend on the smallest possible interface.<br>(类间的依赖关系应该建立在最小的接口上。)</p>
-<p>理解：第一种定义：”客户端不应该依赖不需要的接口“，那依赖什么？依赖它需要的接口，客户端需要什么接口就提供什么接口，把不需要的接口剔除掉，那就需要对接口进行细化，保证其纯洁性；再看第二种定义：”类间的依赖关系应该建立在最小的接口“，它要求是最小的接口，也是要求接口细化，接口纯洁，与第一个定义如出一辙，只是一个事物的两种不同描述。我们可以把两个定义概括为一句话：建立单一接口，不用建立臃肿庞大的接口。再通俗一点讲：接口尽量细化，同时接口中的方法尽量少。</p>
-<p>总结：一个接口只服务于一个子模块或业务逻辑；通过业务逻辑压缩接口中的public方法，接口时常去回顾，尽量让接口达到”满身筋骨肉“，而不是”肥嘟嘟“的一大堆方法；<br>已经被污染了的接口，尽量去修改，若变更的风险较大，则采用适配器模式进行转化处理；<br>了解环境，拒绝盲从。每个项目或产品都有特定的环境因素，别看到大师是这样做的你就照抄。千万别，环境不同，接口拆分的标准就不同。深入了解业务逻辑，最好的接口设计就出自你的手中！</p>
-<h2 id="5、迪米特法则"><a href="#5、迪米特法则" class="headerlink" title="5、迪米特法则"></a>5、迪米特法则</h2><p>迪米特法则（Law of Demeter，LoD）也称为最少知识原则（Least Knowledge Principle，LKP），虽然名字不同，但描述的是同一个规则：一个对象应该对其他对象有最少的了解。通俗的讲，一个类应该对自己需要耦合或调用的类知道的最少，你（被耦合或调用的类）的内部是如何复杂都和我没关系，那是你的事情，我就知道你提供的这么多public方法，我就调用这么多，其他的我一概不关心。</p>
-<p>理解：尽量减少对象之间的交互，从而减小类之间的耦合。在做系统设计时，不要让一个类依赖于太多其他的类，需尽量减小依赖关系，否则死都不知道怎么死的。</p>
-<p>总结：一定要做到：低耦合、高内聚。</p>
-<h2 id="6、开闭原则"><a href="#6、开闭原则" class="headerlink" title="6、开闭原则"></a>6、开闭原则</h2><p>定义：Software entities like classes,modules and functions should be open for extension but closed for modifications.<br>(一个软件实体如类、模块和函数应该对扩展开放，对修改关闭。)</p>
-<p>理解：类、模块、函数，可以去扩展，但不要去修改。如果要修改代码，尽量用继承或组合的方式来扩展类的功能，而不是直接修改类的代码。当然，如果能保证对整个架构不会产生任何影响，那就没必要搞的那么复杂，直接改这个类吧。</p>
-<p>总结：对软件实体的改动，最好用扩展而非修改的方式。</p>
+        <p>##内存布局-五大区</p>
+<a id="more"></a>
+<p><img src="/2020/Thu%20Jul%2002%202020%2018:45:13%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)/1593686901942.jpg" alt></p>
+<ol>
+<li><strong>栈区 0x7</strong> 创建临时变量时由编译器自动分配，在不需要的时候自动清除的变量的存储区。<br>里面的变量通常是局部变量、函数参数等。在一个进程中，位于用户虚拟地址空间顶部的是用户栈，编 译器用它来实现函数的调用。和堆一样，用户栈在程序执行期间可以动态地扩展和收缩。</li>
+</ol>
+<ol start="2">
+<li><strong>堆区 0x6</strong> 那些由 new alloc 创建的对象所分配的内存块，它们的释放系统不会主动去管，由我们的开发者去告诉系统什么时候释放这块内存(一个对象引用计数为0是系统就会回销毁该内存区域对象)。一般一个 new 就要对应一个 release。在ARC下编译器会自动在合适位置为OC对象添加release操作。会在当前线程Runloop退出或休眠时销毁这些对象，MRC则需程序员手动释放。<br>堆可以动态地扩展和收缩。</li>
+</ol>
+<ol start="3">
+<li><strong>静态区(未初始化数据).bss</strong> 程序运行过程内存的数据一直存在，程序结束后由系统释放</li>
+</ol>
+<ol start="4">
+<li><strong>常量区(已初始化数据).data</strong> 专门用于存放常量，程序结束后由系统释放</li>
+</ol>
+<ol start="5">
+<li><strong>代码区</strong> 用于存放程序运行时的代码，代码会被编译成二进制存进内存的程序代码区</li>
+</ol>
+<p>##内存管理方案<br>###TaggedPointer<br>通常我们创建对象，对象存储在堆中，对象的指针存储在栈中，如果我们要找到这个对象，就需要先在栈中，找到指针地址，然后根据指针地址找到在堆中的对象。<br>这个过程比较繁琐，当存储的对象只是一个很小的东西，比如一个字符串，一个数字。去走这么一个繁琐的过程，无非是耗费性能的，所以苹果就搞出了TaggedPointer这么一个东西。</p>
+<ol>
+<li>TaggedPointer是苹果为了解决32位CPU到64位CPU的转变带来的内存占用和效率问题，针对NSNumber、NSDate以及部分NSString的内存优化方案。</li>
+</ol>
+<ol start="2">
+<li>Tagged Pointer指针的值不再是地址了，而是真正的值。所以，实际上它不再是一个对象了，它只是一个披着对象皮的普通变量而已。所以，它的内存并不存储在堆中，也不需要malloc和free。</li>
+</ol>
+<ol start="3">
+<li>Tagged Pointer指针中包含了当前对象的地址、类型、具体数值。因此Tagged Pointer指针在内存读取上有着3倍的效率，创建时比普通需要malloc跟free的类型快106倍。</li>
+</ol>
+<p><a href="https://www.jianshu.com/p/c9089494fb6c" target="_blank" rel="noopener">这里有对TaggedPointer进行详细介绍</a></p>
+<p>###问题<br>为什么第二个for会崩溃？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">dispatch_queue_t queue &#x3D; dispatch_queue_create(&quot;queue&quot;, DISPATCH_QUEUE_CONCURRENT);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    dispatch_async(queue, ^&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">        for (int i &#x3D; 0 ; i&lt;1000000; i++) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">            self.str &#x3D; @&quot;abcd&quot;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">        &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    &#125;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    dispatch_async(queue, ^&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">        for (int i &#x3D; 0 ; i&lt;1000000; i++) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">            self.str &#x3D; [NSString stringWithFormat:@&quot;adfalkdjfldkasjflakjsdkflasf-- %d&quot;,I];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">        &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">    &#125;);</span></pre></td></tr></table></figure>
+<p>答：taggedpointer。在setproperty函数中，执行了objc_release(id obj)。<br>由于大量的循环，导致了线程问题，使引用计数&lt;=-1。<br>但是由于第一个循环中的obj是taggedpointer类型的string，会直接return obj，并不会release。但是这里release，retain的时候咋办呢，引用计数是一直往上增吗？并不是，在objc_retain(id obj)中，同样判断了obj-&gt;isTaggedPointer，如果是true，就直接return obj。</p>
+<p>###NONPOINTER_ISA<br>NSObject继承关系：<br>NSObject -&gt; Class -&gt; objc_class -&gt; objc_object -&gt; isa_t</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">union isa_t &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    isa_t() &#123; &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    isa_t(uintptr_t value) : bits(value) &#123; &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    Class cls;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    uintptr_t bits;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">#if defined(ISA_BITFIELD)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">    struct &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">        ISA_BITFIELD;  &#x2F;&#x2F; defined in isa.h</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">    &#125;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">#endif</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">&#125;;</span></pre></td></tr></table></figure>
+
+<p>isa_t是联合体，然后重点看ISA_BITFIELD，<br><img src="/2020/Thu%20Jul%2002%202020%2018:45:13%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)/1593686932245.jpg" alt></p>
+<p>####参数解释</p>
+<blockquote>
+<p><strong>nonpointer</strong>:表示是否对 isa 指针开启指针优化 ， 0:纯isa指针，1:不止是类对象地址,isa 中包含了类信息、对象的引用计数等。</p>
+</blockquote>
+<blockquote>
+<p><strong>has_assoc</strong>:关联对象标志位，0没有，1存在。</p>
+</blockquote>
+<blockquote>
+<p><strong>has_cxx_dtor</strong>:该对象是否有 C++ 或者 Objc 的析构器,如果有析构函数,则需要做析构逻辑, 如果没有,则可以更更快的释放对象。</p>
+</blockquote>
+<blockquote>
+<p><strong>shiftcls</strong>:存储类指针的值。开启指针优化的情况下，在 arm64 架构中有 33 位⽤来存储类指针的值。</p>
+</blockquote>
+<blockquote>
+<p><strong>magic</strong>:用于调试器判断当前对象是真的对象还是没有初始化的空间 。</p>
+</blockquote>
+<blockquote>
+<p><strong>weakly_referenced</strong>:标志对象是否被指向或者曾经指向⼀一个 ARC 的弱变量，没有弱引用的对象可以更快释放。</p>
+</blockquote>
+<blockquote>
+<p><strong>deallocating</strong>:标志对象是否正在释放内存。</p>
+</blockquote>
+<blockquote>
+<p>h<strong>as_sidetable_rc</strong>:是否有用到散列表，当对象引⽤计数大于 10 时，则需要借⽤该变量存储进位。</p>
+</blockquote>
+<blockquote>
+<p><strong>extra_rc</strong>:当表示该对象的引用计数值，实际上是引用计数值减 1。例如，如果对象的引用计数为 10，那么 extra_rc 为 9。<br>例：在<strong>x86_64(mac)</strong>的架构下，如果引用计数大于 255，引用计数将会发生溢出。 溢出时，则需要将has_sidetable_rc标记为1，将会将拿出<strong>2的7次方(128，就是上面的RC_HALF)</strong>放入散列表(sidetable)</p>
+</blockquote>
 
       
 
@@ -261,24 +302,13 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color5">设计原则</a>
+        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color4">iOS</a>
         		</li>
       		
 		</ul>
 	</div>
 
       
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/编程思想//" class="article-tag-list-link color5">编程思想</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
 
       
 
@@ -328,7 +358,7 @@
     <a class="close js-modal-close" href="javascript:;" target="_blank" rel="noopener"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/12-06-15:11:26/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2020/Thu%20Jul%2002%202020%2018:45:13%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -342,18 +372,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2019/12-06-23:00:01/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          统一建模语言(UML)简介
-        
-      </div>
-    </a>
   
-  
-    <a href="/2019/12-03-15:15:15/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">iOS资料整理</div>
+    <a href="/2020/2020-06-02-11:34:34/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Explain +load and +initlalize</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -380,7 +401,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1、单一职责原则"><span class="toc-number">1.</span> <span class="toc-text">1、单一职责原则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2、里氏替换原则"><span class="toc-number">2.</span> <span class="toc-text">2、里氏替换原则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3、依赖倒置原则"><span class="toc-number">3.</span> <span class="toc-text">3、依赖倒置原则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4、接口隔离原则"><span class="toc-number">4.</span> <span class="toc-text">4、接口隔离原则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5、迪米特法则"><span class="toc-number">5.</span> <span class="toc-text">5、迪米特法则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6、开闭原则"><span class="toc-number">6.</span> <span class="toc-text">6、开闭原则</span></a></li></ol>
+                    目录，不存在的…
                     </div>
                 </span>
             </div>
