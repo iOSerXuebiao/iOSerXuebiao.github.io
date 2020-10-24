@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="X的博客">
 <meta property="og:description" content="UML类图">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2020-05-23T08:15:52.911Z">
+<meta property="og:updated_time" content="2020-10-23T09:27:43.865Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="X的博客" type="application/atom+xml">
@@ -205,6 +205,8 @@
 <p>./kspod KSMallCartModule 1.0.0.0 ‘first commit’</p>
 <p>pod ‘KSMallOrderModule’, :path =&gt; ‘../KSPrivatePods/KSMallOrderModule/‘       #订单模块</p>
 <p>swift-alogrithm-club上的数据结构</p>
+<p>增加最低速度时间<br>git config –global http.lowSpeedLimit 0<br>git config –global http.lowSpeedTime 999999</p>
+<p>git config –global url.”<a href="https://gitclone.com/github.com/&quot;.insteadOf" target="_blank" rel="noopener">https://gitclone.com/github.com/&quot;.insteadOf</a> <a href="https://github.com/" target="_blank" rel="noopener">https://github.com/</a></p>
 <h1 id="Hexo"><a href="#Hexo" class="headerlink" title="Hexo"></a>Hexo</h1><p><a href="https://ioserxuebiao.github.io" target="_blank" rel="noopener">博客地址</a></p>
 <p>参考链接<br><a href="https://www.jianshu.com/p/860d3e0fff58" target="_blank" rel="noopener">https://www.jianshu.com/p/860d3e0fff58</a><br><a href="https://segmentfault.com/a/1190000017986794" target="_blank" rel="noopener">https://segmentfault.com/a/1190000017986794</a></p>
 <p>hexo n “我的博客” == hexo new “我的博客”   //新建文章<br>hexo g == hexo generate  //生成<br>hexo s == hexo server    //启动服务预览<br>hexo d == hexo deploy    //部署</p>
@@ -215,8 +217,10 @@
 <p>更新慢的问题：无论是执行pod install还是pod update都卡在了Analyzing dependencies不动:</p>
 <p>pod install –verbose –no-repo-update</p>
 <p>pod update –verbose –no-repo-update</p>
+<p>gem which cocoapods<br>where is kspod</p>
 <p>查找一个文件或目录<br>find / -name validator.rb</p>
 <p>pod检查当前安装版本列表<br>gem list –local | grep cocoapods<br>卸载不用的版本<br>sudo gem uninstall cocoapods   1.5.3<br>安装指定版本<br>sudo gem install cocoapods -v 1.6.1<br>安装最新版本<br>sudo gem install cocoapods</p>
+<h3 id="上传pod库到cocoapods官方spec仓库"><a href="#上传pod库到cocoapods官方spec仓库" class="headerlink" title="上传pod库到cocoapods官方spec仓库"></a>上传pod库到cocoapods官方spec仓库</h3><p>git tag -123456789 0.1.0 -m “xxxxxxxxxxxx”<br>pod trunk register yourEmail  yourName  –verbose<br>pod trunk push  xxxxxxxxx.podspec  –allow-warnings</p>
 <h3 id="Pod私有库制作教程"><a href="#Pod私有库制作教程" class="headerlink" title="Pod私有库制作教程"></a>Pod私有库制作教程</h3><p><a href="http://blog.wtlucky.com/blog/2015/02/26/create-private-podspec/" target="_blank" rel="noopener">http://blog.wtlucky.com/blog/2015/02/26/create-private-podspec/</a></p>
 <p>####gems目录<br>cd /Library/Ruby/Gems/2.3.0/gems/cocoapods-1.8.4</p>
 <p>私有库i386上传问题，修改validator.rb文件</p>
@@ -484,6 +488,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color5">设计原则</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color5">资料整理</a>
               </li>
              
@@ -492,19 +500,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color5">设计原则</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color5">架构概念</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color4">组件化</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color1">组件库制作</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color4">UML</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color5">架构概念</a>
               </li>
             
             <div class="clearfix"></div>
