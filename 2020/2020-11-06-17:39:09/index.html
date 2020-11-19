@@ -8,17 +8,17 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>iOS基础Bundle、folder、group详解 | X的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="一、Bundles是什么？Bundle是一个含有可执行的代码及代码所需资源，以特定标准的层次结构组合起来的文件夹。这里的可执行是指编译过后可直接运行的代码程序。一个典型的例子就是iOS程序打包后的ipa，我们解压ipa后会得到一个payload文件夹，进入文件夹之后会发现一个和ipa名称相同的.app文件夹。这个.app文件夹就是一个Bundle。 我们再来看一下苹果官方文档的描述： About">
+  <meta name="description" content="一、Bundles是什么？">
 <meta name="keywords" content="iOS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS基础Bundle、folder、group详解">
 <meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;2020-11-06-17:39:09&#x2F;index.html">
 <meta property="og:site_name" content="X的博客">
-<meta property="og:description" content="一、Bundles是什么？Bundle是一个含有可执行的代码及代码所需资源，以特定标准的层次结构组合起来的文件夹。这里的可执行是指编译过后可直接运行的代码程序。一个典型的例子就是iOS程序打包后的ipa，我们解压ipa后会得到一个payload文件夹，进入文件夹之后会发现一个和ipa名称相同的.app文件夹。这个.app文件夹就是一个Bundle。 我们再来看一下苹果官方文档的描述： About">
+<meta property="og:description" content="一、Bundles是什么？">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;2020-11-06-17:39:09&#x2F;1604720590663.jpg">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;2020-11-06-17:39:09&#x2F;1604720838878.jpg">
-<meta property="og:updated_time" content="2020-11-07T03:54:41.537Z">
+<meta property="og:updated_time" content="2020-11-18T13:00:26.242Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;2020-11-06-17:39:09&#x2F;1604720590663.jpg">
   
@@ -194,7 +194,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="一、Bundles是什么？"><a href="#一、Bundles是什么？" class="headerlink" title="一、Bundles是什么？"></a>一、Bundles是什么？</h1><p><code>Bundle</code>是一个含有可执行的代码及代码所需资源，以特定标准的层次结构组合起来的文件夹。这里的可执行是指编译过后可直接运行的代码程序。一个典型的例子就是iOS程序打包后的ipa，我们解压ipa后会得到一个payload文件夹，进入文件夹之后会发现一个和ipa名称相同的.app文件夹。这个.app文件夹就是一个<code>Bundle</code>。</p>
+        <h1 id="一、Bundles是什么？"><a href="#一、Bundles是什么？" class="headerlink" title="一、Bundles是什么？"></a>一、Bundles是什么？</h1><a id="more"></a>
+<p><code>Bundle</code>是一个含有可执行的代码及代码所需资源，以特定标准的层次结构组合起来的文件夹。这里的可执行是指编译过后可直接运行的代码程序。一个典型的例子就是iOS程序打包后的ipa，我们解压ipa后会得到一个payload文件夹，进入文件夹之后会发现一个和ipa名称相同的.app文件夹。这个.app文件夹就是一个<code>Bundle</code>。</p>
 <p>我们再来看一下苹果官方文档的描述：</p>
 <h3 id="About-Bundles"><a href="#About-Bundles" class="headerlink" title="About Bundles"></a>About Bundles</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">Bundles are a convenient way to deliver software in macOS and iOS. Bundles provide a simplified interface for end users and at the same time provide support for development. This chapter provides an introduction to bundles and discusses the role they play in macOS and iOS.</span></pre></td></tr></table></figure>
 <h3 id="Bundles-and-Packages"><a href="#Bundles-and-Packages" class="headerlink" title="Bundles and Packages"></a>Bundles and Packages</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">Although bundles and packages are sometimes referred to interchangeably, they actually represent very distinct concepts:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">* A package is any directory that the Finder presents to the user as if it were a single file.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">* A bundle is a directory with a standardized hierarchical structure that holds executable code and the resources used by that code.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">Packages provide one of the fundamental abstractions that makes macOS easy to use. If you look at an application or plug-in on your computer, what you are actually looking at is a directory. Inside the package directory are the code and resource files needed to make the application or plug-in run. When you interact with the package directory, however, the Finder treats it like a single file. This behavior prevents casual users from making changes that might adversely affect the contents of the package. For example, it prevents users from rearranging or deleting resources or code modules that might prevent an application from running correctly.</span></pre></td></tr></table></figure>
@@ -363,6 +364,15 @@
   
 <nav id="article-nav">
   
+    <a href="/2020/2020-11-18-20:59:08/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          iOS对象所占内存大小之内存对齐
+        
+      </div>
+    </a>
+  
   
     <a href="/2020/2020-08-25-17:25:13/" id="article-nav-older" class="article-nav-link-wrap">
       <div class="article-nav-title">iOS 组件库制作流程</div>
@@ -516,6 +526,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color3">随笔</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color5">架构概念</a>
               </li>
              
@@ -525,10 +539,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color1">组件库制作</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color3">随笔</a>
               </li>
              
               <li class="article-tag-list-item">

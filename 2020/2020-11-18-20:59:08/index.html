@@ -6,21 +6,18 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>iOS 内存布局&amp;内存管理方案 | X的博客</title>
+  <title>iOS对象所占内存大小之内存对齐 | X的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="内存布局-五大区">
+  <meta name="description" content="一、获取NSObject对象占用的空间大小">
 <meta name="keywords" content="iOS">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS 内存布局&amp;内存管理方案">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;2020-07-02-18:45:13&#x2F;index.html">
+<meta property="og:title" content="iOS对象所占内存大小之内存对齐">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;2020-11-18-20:59:08&#x2F;index.html">
 <meta property="og:site_name" content="X的博客">
-<meta property="og:description" content="内存布局-五大区">
+<meta property="og:description" content="一、获取NSObject对象占用的空间大小">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;2020-07-02-18:45:13&#x2F;1593686901942.jpg">
-<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;2020-07-02-18:45:13&#x2F;1593686932245.jpg">
-<meta property="og:updated_time" content="2020-07-03T02:31:48.000Z">
+<meta property="og:updated_time" content="2020-11-19T07:18:24.595Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;2020-07-02-18:45:13&#x2F;1593686901942.jpg">
   
     <link rel="alternative" href="/atom.xml" title="X的博客" type="application/atom+xml">
   
@@ -174,88 +171,159 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-iOS-内存布局-内存管理方案" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-iOS对象所占内存大小之内存对齐" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      iOS 内存布局&amp;内存管理方案
+      iOS对象所占内存大小之内存对齐
     </h1>
   
 
         
-        <a href="/2020/2020-07-02-18:45:13/" class="archive-article-date">
-  	<time datetime="2020-07-02T10:45:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-02</time>
+        <a href="/2020/2020-11-18-20:59:08/" class="archive-article-date">
+  	<time datetime="2020-11-18T12:59:08.136Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-18</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="内存布局-五大区"><a href="#内存布局-五大区" class="headerlink" title="内存布局-五大区"></a>内存布局-五大区</h2><a id="more"></a>
-<p><img src="/2020/2020-07-02-18:45:13/1593686901942.jpg" alt></p>
+        <h1 id="一、获取NSObject对象占用的空间大小"><a href="#一、获取NSObject对象占用的空间大小" class="headerlink" title="一、获取NSObject对象占用的空间大小"></a>一、获取NSObject对象占用的空间大小</h1><a id="more"></a>
 <ol>
-<li><strong>栈区 0x7</strong> 创建临时变量时由编译器自动分配，在不需要的时候自动清除的变量的存储区。<br>里面的变量通常是局部变量、函数参数等。在一个进程中，位于用户虚拟地址空间顶部的是用户栈，编 译器用它来实现函数的调用。和堆一样，用户栈在程序执行期间可以动态地扩展和收缩。</li>
+<li><p>创建一个 NSObject 对象, 分别调用 class_getInstanceSize 和 malloc_size方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">NSObject *obj &#x3D; [[NSObject alloc] init];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 需要导入 #import &lt;objc&#x2F;runtime.h&gt;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">NSLog(@&quot;%zd&quot;, class_getInstanceSize([NSObject class]));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"> </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 需要导入 #import &lt;malloc&#x2F;malloc.h&gt;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">NSLog(@&quot;%zd&quot;, malloc_size((__bridge const void *)(obj)));</span></pre></td></tr></table></figure></li>
+<li><p>查看Log</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">2019-11-05 15:10:22.210505+0800 Interview001-OC对象的本质[9215:816956] 8</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">2019-11-05 15:10:22.210675+0800 Interview001-OC对象的本质[9215:816956] 16</span></pre></td></tr></table></figure>
+</li>
+<li><p>可以看出系统开辟了16个字节, 但是该对象只是用了8个字节，这是为什么呢?</p>
+</li>
+<li><p>点进 NSObject 可以看到下面的代码, NSObject 对象真正的是一个结构体指针, 所以会占用8个字节。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;&#x2F; An opaque type that represents an Objective-C class.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">typedef struct objc_class *Class;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"> </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">@interface NSObject &lt;NSObject&gt; &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    Class isa ;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure></li>
+<li><p>在 <a href="https://opensource.apple.com/tarballs/" target="_blank" rel="noopener">OpenSource</a> 找到 runtime 源码, 搜索 class_getInstanceSize 可以找到下面的代码, 可以看出 class_getInstanceSize 获取的是类的成员变量的 size, 并不是一个对象所占用的空间。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">size_t class_getInstanceSize(Class cls)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    if (!cls) return 0;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    return cls-&gt;alignedInstanceSize();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; Class&#39;s ivar size rounded up to 123456789 pointer-size boundary.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">uint32_t alignedInstanceSize() &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">    return word_align(unalignedInstanceSize());</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">size_t instanceSize(size_t extraBytes) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">    size_t size &#x3D; alignedInstanceSize() + extraBytes;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">    &#x2F;&#x2F; CF requires all objects be at least 16 bytes.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">    if (size &lt; 16) size &#x3D; 16;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">    return size;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+</li>
+<li><p>那为什么会分配16个字节了? 也是在 runtime 里找到了答案, 当 size &lt; 16 时, 会默认分配16个字节。<br>可以参照 <a href="https://juejin.im/post/5abdd56df265da2396127e6b" target="_blank" rel="noopener">这篇文章</a> 把.m文件编译成.cpp文件, 查看 NSObject真正的实现, 可以理解是对应 c++ 里的结构体。</p>
+</li>
 </ol>
-<ol start="2">
-<li><strong>堆区 0x6</strong> 那些由 new alloc 创建的对象所分配的内存块，它们的释放系统不会主动去管，由我们的开发者去告诉系统什么时候释放这块内存(一个对象引用计数为0是系统就会回销毁该内存区域对象)。一般一个 new 就要对应一个 release。在ARC下编译器会自动在合适位置为OC对象添加release操作。会在当前线程Runloop退出或休眠时销毁这些对象，MRC则需程序员手动释放。<br>堆可以动态地扩展和收缩。</li>
-</ol>
-<ol start="3">
-<li><strong>静态区(未初始化数据).bss</strong> 程序运行过程内存的数据一直存在，程序结束后由系统释放</li>
-</ol>
-<ol start="4">
-<li><strong>常量区(已初始化数据).data</strong> 专门用于存放常量，程序结束后由系统释放</li>
-</ol>
-<ol start="5">
-<li><strong>代码区</strong> 用于存放程序运行时的代码，代码会被编译成二进制存进内存的程序代码区</li>
-</ol>
-<h2 id="内存管理方案"><a href="#内存管理方案" class="headerlink" title="内存管理方案"></a>内存管理方案</h2><h3 id="TaggedPointer"><a href="#TaggedPointer" class="headerlink" title="TaggedPointer"></a>TaggedPointer</h3><p>通常我们创建对象，对象存储在堆中，对象的指针存储在栈中，如果我们要找到这个对象，就需要先在栈中，找到指针地址，然后根据指针地址找到在堆中的对象。<br>这个过程比较繁琐，当存储的对象只是一个很小的东西，比如一个字符串，一个数字。去走这么一个繁琐的过程，无非是耗费性能的，所以苹果就搞出了TaggedPointer这么一个东西。</p>
-<ol>
-<li>TaggedPointer是苹果为了解决32位CPU到64位CPU的转变带来的内存占用和效率问题，针对NSNumber、NSDate以及部分NSString的内存优化方案。</li>
-</ol>
-<ol start="2">
-<li>Tagged Pointer指针的值不再是地址了，而是真正的值。所以，实际上它不再是一个对象了，它只是一个披着对象皮的普通变量而已。所以，它的内存并不存储在堆中，也不需要malloc和free。</li>
-</ol>
-<ol start="3">
-<li>Tagged Pointer指针中包含了当前对象的地址、类型、具体数值。因此Tagged Pointer指针在内存读取上有着3倍的效率，创建时比普通需要malloc跟free的类型快106倍。</li>
-</ol>
-<p><a href="https://www.jianshu.com/p/c9089494fb6c" target="_blank" rel="noopener">这里有对TaggedPointer进行详细介绍</a></p>
-<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>为什么第二个for会崩溃？</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">dispatch_queue_t queue &#x3D; dispatch_queue_create(&quot;queue&quot;, DISPATCH_QUEUE_CONCURRENT);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    dispatch_async(queue, ^&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">        for (int i &#x3D; 0 ; i&lt;1000000; i++) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">            self.str &#x3D; @&quot;abcd&quot;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">        &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    &#125;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    dispatch_async(queue, ^&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">        for (int i &#x3D; 0 ; i&lt;1000000; i++) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">            self.str &#x3D; [NSString stringWithFormat:@&quot;adfalkdjfldkasjflakjsdkflasf-- %d&quot;,I];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">        &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">    &#125;);</span></pre></td></tr></table></figure>
-<p>答：taggedpointer。在setproperty函数中，执行了objc_release(id obj)。<br>由于大量的循环，导致了线程问题，使引用计数&lt;=-1。<br>但是由于第一个循环中的obj是taggedpointer类型的string，会直接return obj，并不会release。但是这里release，retain的时候咋办呢，引用计数是一直往上增吗？并不是，在objc_retain(id obj)中，同样判断了obj-&gt;isTaggedPointer，如果是true，就直接return obj。</p>
-<h3 id="NONPOINTER-ISA"><a href="#NONPOINTER-ISA" class="headerlink" title="NONPOINTER_ISA"></a>NONPOINTER_ISA</h3><p>NSObject继承关系：<br>NSObject -&gt; Class -&gt; objc_class -&gt; objc_object -&gt; isa_t</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">union isa_t &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    isa_t() &#123; &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    isa_t(uintptr_t value) : bits(value) &#123; &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    Class cls;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    uintptr_t bits;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">#if defined(ISA_BITFIELD)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">    struct &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">        ISA_BITFIELD;  &#x2F;&#x2F; defined in isa.h</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">    &#125;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">#endif</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">&#125;;</span></pre></td></tr></table></figure>
+<h1 id="二、自定义对象所占空间"><a href="#二、自定义对象所占空间" class="headerlink" title="二、自定义对象所占空间"></a>二、自定义对象所占空间</h1><ol>
+<li><p>自定义一个Person类</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">@interface Person : NSObject</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"> &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"> &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"> @end</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"> </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"> @implementation  Person</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"> @end</span></pre></td></tr></table></figure>
+<p>打印当前对象</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">Person *p &#x3D; [[Person alloc] init];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">NSLog(@&quot;%zd&quot;, class_getInstanceSize([Person class]));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">NSLog(@&quot;%zd&quot;, malloc_size((__bridge const void *)(p)));</span></pre></td></tr></table></figure>
 
-<p>isa_t是联合体，然后重点看ISA_BITFIELD，<br><img src="/2020/2020-07-02-18:45:13/1593686932245.jpg" alt></p>
-<h4 id="参数解释"><a href="#参数解释" class="headerlink" title="参数解释"></a>参数解释</h4><blockquote>
-<p><strong>nonpointer</strong>:表示是否对 isa 指针开启指针优化 ， 0:纯isa指针，1:不止是类对象地址,isa 中包含了类信息、对象的引用计数等。</p>
-</blockquote>
-<blockquote>
-<p><strong>has_assoc</strong>:关联对象标志位，0没有，1存在。</p>
-</blockquote>
-<blockquote>
-<p><strong>has_cxx_dtor</strong>:该对象是否有 C++ 或者 Objc 的析构器,如果有析构函数,则需要做析构逻辑, 如果没有,则可以更更快的释放对象。</p>
-</blockquote>
-<blockquote>
-<p><strong>shiftcls</strong>:存储类指针的值。开启指针优化的情况下，在 arm64 架构中有 33 位⽤来存储类指针的值。</p>
-</blockquote>
-<blockquote>
-<p><strong>magic</strong>:用于调试器判断当前对象是真的对象还是没有初始化的空间 。</p>
-</blockquote>
-<blockquote>
-<p><strong>weakly_referenced</strong>:标志对象是否被指向或者曾经指向⼀一个 ARC 的弱变量，没有弱引用的对象可以更快释放。</p>
-</blockquote>
-<blockquote>
-<p><strong>deallocating</strong>:标志对象是否正在释放内存。</p>
-</blockquote>
-<blockquote>
-<p>h<strong>as_sidetable_rc</strong>:是否有用到散列表，当对象引⽤计数大于 10 时，则需要借⽤该变量存储进位。</p>
-</blockquote>
-<blockquote>
-<p><strong>extra_rc</strong>:当表示该对象的引用计数值，实际上是引用计数值减 1。例如，如果对象的引用计数为 10，那么 extra_rc 为 9。<br>例：在<strong>x86_64(mac)</strong>的架构下，如果引用计数大于 255，引用计数将会发生溢出。 溢出时，则需要将has_sidetable_rc标记为1，将会将拿出<strong>2的7次方(128，就是上面的RC_HALF)</strong>放入散列表(sidetable)</p>
-</blockquote>
+<p>得到的结果和 NSObject 对象一样的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">2019-11-05 15:30:11.991698+0800 Interview001-OC对象的本质[9360:864510] 8</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">2019-11-05 15:30:11.991704+0800 Interview001-OC对象的本质[9360:864510] 16</span></pre></td></tr></table></figure>
+</li>
+<li><p>给自定义对象添加1个成员变量, 再次打印</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">@interface Person : NSObject</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    int _age;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">@end</span></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">2019-11-05 15:31:56.767972+0800 Interview001-OC对象的本质[9385:868476] 16</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">2019-11-05 15:31:56.767978+0800 Interview001-OC对象的本质[9385:868476] 16</span></pre></td></tr></table></figure></li>
+<li><p>再次添加成员变量, 再次打印</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">@interface Person : NSObject</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    int _age;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    int _number;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">@end</span></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">2019-11-05 15:34:16.503491+0800 Interview001-OC对象的本质[9414:874058] 16</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">2019-11-05 15:34:16.503497+0800 Interview001-OC对象的本质[9414:874058] 16</span></pre></td></tr></table></figure>
+</li>
+<li><p>很奇怪, 没有变化啊? 我们编程成.cpp再来分析</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">struct Person_IMPL &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"> struct NSObject_IMPL NSObject_IVARS;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"> int _age;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"> int _number;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">&#125;;</span></pre></td></tr></table></figure>
+</li>
+<li><p>这时自定义对象包含了</p>
+<ul>
+<li>1个结构体指针 (8字节)</li>
+<li>1个 int _age (4字节)</li>
+<li>1个 int _number (4字节)<br>8 + 4 + 4 = 16 字节</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li>没有添加任何成员变量时, 只有1个结构体指针, 所以会是8字节</li>
+<li>添加1个成员变量时, 有1个结构体指针, 和1个 int 类型的值, 那就是 8 + 4 = 12, 为什么 class_getInstanceSize 得到的结果是16了. 其实扩容基数是8(内存对齐原因, 结构体的大小必须是最大成员大小的倍数), 8个字节不够了, 就开辟了8*2个字节, 依此类推  </li>
+<li>添加了2个成员变量时, 有1个结构体指针, 和2个 int 类型的值,那就是 8 + 4 + 4 = 16</li>
+</ul>
+<ol start="6">
+<li>再添加一个成员变量</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">@interface Person : NSObject</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    int _age;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    int _number;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    int _sex;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">@end</span></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">2019-11-05 15:48:24.959113+0800 Interview001-OC对象的本质[9511:896453] 24</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">2019-11-05 15:48:24.959120+0800 Interview001-OC对象的本质[9511:896453] 32</span></pre></td></tr></table></figure>
+
+<p>可以看出 class_getInstanceSize 已经是8*3=24字节了<br>但是 malloc_size 却是 32了, 因为是以16为基数来扩容的, 因为 iOS 在分配对象内存时, 都是以16倍数来分配的</p>
+<ol start="7">
+<li>探索下系统是如何内存对齐的</li>
+</ol>
+<ul>
+<li>运算符的含义</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center">运算符</th>
+<th align="center">含义</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">&gt;&gt;</td>
+<td align="center">右移</td>
+<td align="center">将一个数的各二进制位右移N位，移到右端的低位被舍弃，对于无符号数，高位补0</td>
+</tr>
+<tr>
+<td align="center">&lt;&lt;</td>
+<td align="center">左移</td>
+<td align="center">用来将一个数的各二进制位全部左移N位，高位舍弃，低位补0</td>
+</tr>
+<tr>
+<td align="center">&amp;</td>
+<td align="center">按位与</td>
+<td align="center">如果两个相应的二进制位都为1，则该位的结果值为1，否则为0</td>
+</tr>
+<tr>
+<td align="center">I</td>
+<td align="center">按位或</td>
+<td align="center">两个相应的二进制位中只要有一个为1，该位的结果值为1，否则为0</td>
+</tr>
+<tr>
+<td align="center">~</td>
+<td align="center">取反</td>
+<td align="center">对这个存储单元当前的值取反，也就是原来数中为1的变为0，0变为1</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p>看一下源码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">static inline uint32_t word_align(uint32_t x) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">  return (x + WORD_MASK) &amp; ~WORD_MASK;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"> </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">static inline size_t word_align(size_t x) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    return (x + WORD_MASK) &amp; ~WORD_MASK;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">static inline size_t align16(size_t x) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">      return (x + size_t(15)) &amp; ~size_t(15);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+<p>那么我们就不难理解了，分析一下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"> &#x2F;**</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">return (x + WORD_MASK) &amp; ~WORD_MASK;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">假设x为6</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">0000 0111    7</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">1111  1000    ~WORD_MASK</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">0000 1101    6 + 7  &#x3D;   13</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">0000 1000    (x + WORD_MASK) &amp; ~WORD_MASK  结果：8</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">*&#x2F;</span></pre></td></tr></table></figure>
+</li>
+<li><p>我们自己来写个方法，换一个方式来达到系统内存对齐效果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">class_getInstanceSize扩容基数是8：</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    int funcMethod(int num) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">      return (num + 7) &gt;&gt; 3 &lt;&lt; 3;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; &gt;&gt; 右移  将一个数的各二进制位右移N位，移到右端的低位被舍弃，对于无符号数，高位补0。</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; &lt;&lt; 左移  用来将一个数的各二进制位全部左移N位，高位舍弃，低位补0。</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; 0000 1101    6 + 7  &#x3D;   13</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; 0000 0001    &gt;&gt; 3</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; 0001 1000    &lt;&lt; 3       8</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; 0001 0011    12 + 7  &#x3D;  19</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; 0000 0010    &gt;&gt; 3</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; 0001 0000    &lt;&lt; 3       16</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">  &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">  int main(int argc, char * argv[]) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">      @autoreleasepool &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">          NSLog(@&quot;%d&quot;,funcMethod(6));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">          NSLog(@&quot;%d&quot;,funcMethod(12));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line">  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">          return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">23</span></pre></td><td class="code"><pre><span class="line">      &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">24</span></pre></td><td class="code"><pre><span class="line">  &#125;</span></pre></td></tr></table></figure>
+
+<p>查看下log打印：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">2020-11-19 14:29:16.424755+0800 Demo1[6321:2027201] 8</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">2020-11-19 14:29:16.425308+0800 Demo1[6321:2027201] 16</span></pre></td></tr></table></figure>
+
+<p>那么funcMethod具体做了什么？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"> return (num + 7) &gt;&gt; 3 &lt;&lt; 3;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; &gt;&gt; 右移  将一个数的各二进制位右移N位，移到右端的低位被舍弃，对于无符号数，高位补0。</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; &lt;&lt; 左移  用来将一个数的各二进制位全部左移N位，高位舍弃，低位补0。</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 0000 1101    6 + 7  &#x3D;   13</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 0000 0001    &gt;&gt; 3</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 0001 1000    &lt;&lt; 3       结果：8</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 0001 0011    12 + 7  &#x3D;  19</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 0000 0010    &gt;&gt; 3</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 0001 0000    &lt;&lt; 3       结果：16</span></pre></td></tr></table></figure>
+
+<p>malloc_size扩容基数是16：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"> int funcMethod(int num) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    return (num + 15) &gt;&gt; 4 &lt;&lt; 4;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">int main(int argc, char * argv[]) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    @autoreleasepool &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">        NSLog(@&quot;%d&quot;,funcMethod(8));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">        NSLog(@&quot;%d&quot;,funcMethod(20));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">        return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>查看下log打印：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">2020-11-19 14:47:36.265334+0800 Demo1[6565:2044463] 16</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">2020-11-19 14:47:36.265933+0800 Demo1[6565:2044463] 32</span></pre></td></tr></table></figure>
+
+<h1 id="三、-结论"><a href="#三、-结论" class="headerlink" title="三、 结论"></a>三、 结论</h1><ul>
+<li>1个 NSObject 对象占用了16个字节</li>
+<li>1个自定义对象占用了几个字节, 需要有多少成员变量, 同时还要计算上 NSObject 的 isa 指针大小, 同时为了对齐, 必须是16的倍数</li>
+</ul>
+<h1 id="四、-注意"><a href="#四、-注意" class="headerlink" title="四、 注意"></a>四、 注意</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">- 如果自定义类有继承关系, 如 Student 继承于 Person, 要继续父类的成员变量</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">- 注意内存对齐问题, iOS 分配内存问题</span></pre></td></tr></table></figure>
+
+
+
+
+
+
 
       
 
@@ -356,7 +424,7 @@
     <a class="close js-modal-close" href="javascript:;" target="_blank" rel="noopener"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2020/2020-07-02-18:45:13/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2020/2020-11-18-20:59:08/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -370,18 +438,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2020/2020-07-03-14:56:33/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          block分析
-        
-      </div>
-    </a>
   
-  
-    <a href="/2020/2020-06-02-11:34:34/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Explain +load and +initlalize</div>
+    <a href="/2020/2020-11-06-17:39:09/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">iOS基础Bundle、folder、group详解</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -408,7 +467,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#内存布局-五大区"><span class="toc-number">1.</span> <span class="toc-text">内存布局-五大区</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#内存管理方案"><span class="toc-number">2.</span> <span class="toc-text">内存管理方案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#TaggedPointer"><span class="toc-number">2.1.</span> <span class="toc-text">TaggedPointer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#问题"><span class="toc-number">2.2.</span> <span class="toc-text">问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NONPOINTER-ISA"><span class="toc-number">2.3.</span> <span class="toc-text">NONPOINTER_ISA</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#参数解释"><span class="toc-number">2.3.1.</span> <span class="toc-text">参数解释</span></a></li></ol></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一、获取NSObject对象占用的空间大小"><span class="toc-number">1.</span> <span class="toc-text">一、获取NSObject对象占用的空间大小</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#二、自定义对象所占空间"><span class="toc-number">2.</span> <span class="toc-text">二、自定义对象所占空间</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#三、-结论"><span class="toc-number">3.</span> <span class="toc-text">三、 结论</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#四、-注意"><span class="toc-number">4.</span> <span class="toc-text">四、 注意</span></a></li></ol>
                     </div>
                 </span>
             </div>

@@ -169,6 +169,82 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-iOS对象所占内存大小之内存对齐" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/2020-11-18-20:59:08/">iOS对象所占内存大小之内存对齐</a>
+    </h1>
+  
+
+        
+        <a href="/2020/2020-11-18-20:59:08/" class="archive-article-date">
+  	<time datetime="2020-11-18T12:59:08.136Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-18</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="一、获取NSObject对象占用的空间大小"><a href="#一、获取NSObject对象占用的空间大小" class="headerlink" title="一、获取NSObject对象占用的空间大小"></a>一、获取NSObject对象占用的空间大小</h1>
+        
+          <a class="article-more-a" href="/2020/2020-11-18-20:59:08/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color4">iOS</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/2020-11-18-20:59:08/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" target="_blank" rel="noopener" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-iOS基础Bundle、folder、group详解" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -189,62 +265,10 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="一、Bundles是什么？"><a href="#一、Bundles是什么？" class="headerlink" title="一、Bundles是什么？"></a>一、Bundles是什么？</h1><p><code>Bundle</code>是一个含有可执行的代码及代码所需资源，以特定标准的层次结构组合起来的文件夹。这里的可执行是指编译过后可直接运行的代码程序。一个典型的例子就是iOS程序打包后的ipa，我们解压ipa后会得到一个payload文件夹，进入文件夹之后会发现一个和ipa名称相同的.app文件夹。这个.app文件夹就是一个<code>Bundle</code>。</p>
-<p>我们再来看一下苹果官方文档的描述：</p>
-<h3 id="About-Bundles"><a href="#About-Bundles" class="headerlink" title="About Bundles"></a>About Bundles</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">Bundles are a convenient way to deliver software in macOS and iOS. Bundles provide a simplified interface for end users and at the same time provide support for development. This chapter provides an introduction to bundles and discusses the role they play in macOS and iOS.</span></pre></td></tr></table></figure>
-<h3 id="Bundles-and-Packages"><a href="#Bundles-and-Packages" class="headerlink" title="Bundles and Packages"></a>Bundles and Packages</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">Although bundles and packages are sometimes referred to interchangeably, they actually represent very distinct concepts:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">* A package is any directory that the Finder presents to the user as if it were a single file.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">* A bundle is a directory with a standardized hierarchical structure that holds executable code and the resources used by that code.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">Packages provide one of the fundamental abstractions that makes macOS easy to use. If you look at an application or plug-in on your computer, what you are actually looking at is a directory. Inside the package directory are the code and resource files needed to make the application or plug-in run. When you interact with the package directory, however, the Finder treats it like a single file. This behavior prevents casual users from making changes that might adversely affect the contents of the package. For example, it prevents users from rearranging or deleting resources or code modules that might prevent an application from running correctly.</span></pre></td></tr></table></figure>
-<p>这里还描述了Bundle和Package的不同定义：</p>
-<ul>
-<li><code>Package</code>是Finder呈现给用户的任何目录，就好像它是一个单独的文件一样。</li>
-<li><code>Bundle</code>是一个具有标准化层次结构的目录，其中包含可执行代码和该代码使用的资源。</li>
-</ul>
-<h3 id="系统如何识别Bundle呢？"><a href="#系统如何识别Bundle呢？" class="headerlink" title="系统如何识别Bundle呢？"></a>系统如何识别Bundle呢？</h3><p>一般而言一个文件夹如果带着.app，.bundle，.framework，.plugin，.kext等特定后缀，那么系统就认为是Bundle。如果使用Xcode创建项目的话，Xcode会提供相应的模板来生成正确的Bundle类型。<br>从上面的后缀我们也可以看出Bundle主要分为：</p>
-<ul>
-<li><code>Appliction</code>。应用程序，包含代码和资源。iOS和macOS的app就是这种。</li>
-<li><code>Frameworks</code>。框架，包含动态共享库和相应资源。我们常用的系统库和第三方库都属于这种。</li>
-<li><code>Plug-Ins</code>。插件，macOS很多的系统功能支持插件，一种动态加载代码模块的方式。</li>
-<li>使用<code>Bundle</code>可以很方便的管理程序的文件内容，进行本地化设置、程序移动和运行等等。</li>
-</ul>
-<p>我们来看一下苹果官方文档的描述：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">How the System Identifies Bundles and Packages</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">The Finder considers a directory to be a package if any of the following conditions are true:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">* The directory has a known filename extension: .app, .bundle, .framework, .plugin, .kext, and so on.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">* The directory has an extension that some other application claims represents a package type; see Document Packages.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">* The directory has its package bit set.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">The preferred way to specify a package is to give the package directory a known filename extension. For the most part, Xcode takes care of this for you by providing templates that apply the correct extension. All you have to do is create an Xcode project of the appropriate type.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">Most bundles are also packages. For example, applications and plug-ins are typically presented as a single file by the Finder. However, this is not true for all bundle types. In particular, a framework is a type of bundle that is treated as a single unit for the purposes of linking and runtime usage, but framework directories are transparent so that developers can view the header files and other resources they contain.</span></pre></td></tr></table></figure>
-
-<h2 id="Bundles的内部结构"><a href="#Bundles的内部结构" class="headerlink" title="Bundles的内部结构"></a>Bundles的内部结构</h2><h3 id="iOS-Application-Bundle的结构"><a href="#iOS-Application-Bundle的结构" class="headerlink" title="iOS Application Bundle的结构"></a>iOS Application Bundle的结构</h3><p>Application类型的bundle是很常见的，一般里面会包含一下几中类型的文件：</p>
-<ul>
-<li>Info.plist文件。每个程序中必须有这个文件，因为它包含了程序运行的配置信息，是系统运行程序的依据。</li>
-<li>可执行代码文件。这是程序的主体，包含了程序的进入点和链接的静态代码。</li>
-<li>资源文件。程序运行过程中需要的资源，比如图片，音频，视频，多语言的字符串文件，nib文件，数据文件，配置文件等等。这里面的大部分文件都可以根据语言、地区、设备通过特定的结构或命名方式加以区分，程序会自动识别加载。</li>
-<li>其他支持文件。Mac app可以嵌入高层资源，比如私有库，插件，文件末班，自定义数据资源等等。iOS app可以包含自定义数据资源，但是不能包含私有库和插件。</li>
-</ul>
-<p>如果我们对于ipa中的.app文件夹右键显示包内容，我们可以看到app bundle的整体结构如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">MyApp  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">  MyApp  &#x2F;&#x2F;代码编译链接后的可执行文件  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">  Info.plist &#x2F;&#x2F;程序信息</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">  Assets.car   &#x2F;&#x2F;Assets中的资源对应的文件。    </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">  MyAppIcon.png  &#x2F;&#x2F;所有的icon图片   </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">  LaunchImage.png  &#x2F;&#x2F;所有启动图片 </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">  nibs  &#x2F;&#x2F;工程中的xib，storyboard生成的nib文件 </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">  customResource  &#x2F;&#x2F;工程目录下或者更里层文件夹下的图片，音、视频，数据文件等自定义资源  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">  customBundle.bundle  &#x2F;&#x2F;工程中使用的其他第三方或资源的bundle  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">  en.lproj  &#x2F;&#x2F;语言区分的文件夹，可以使字符串、图片，nib文件等</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">    MyString  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">    MyImage</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">  zh-Hans.lproj  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">    MyString  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">    MyImage  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">  PkgInfo  &#x2F;&#x2F;系统识别信息  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">  _CodeSignature  &#x2F;&#x2F;签名信息文件夹，里面的CodeResources包含对bundle中的所有资源文件的签名信息  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">  embedded.mobileprovision &#x2F;&#x2F;打包的配置文件信息</span></pre></td></tr></table></figure>
-<p>Assets.car无法直接打开，可以使用工具 cartool 列出包含的所有文件名称。PkgInfo、签名信息和嵌入配置文件都是打包后生成的，是系统验证app的依据。</p>
-<h3 id="Framework-Bundle结构"><a href="#Framework-Bundle结构" class="headerlink" title="Framework Bundle结构"></a>Framework Bundle结构</h3><p>Framework Bundle和app bundle的最大不同在于框架库有版本控制，因此必须包含版本列表和当前版本信息。<br>Framework的bundle结构如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">MyFramework.framework&#x2F;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    MyFramework -&gt; Versions&#x2F;Current&#x2F;MyFramework  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    Resources   -&gt; Versions&#x2F;Current&#x2F;Resources  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    Versions&#x2F;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">        A&#x2F;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">            MyFramework</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">            Headers&#x2F;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">                MyHeader.h</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">            Resources&#x2F; </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">                Eglish.lproj&#x2F;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">                    InfoPlist.strings </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">                Info.plist</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">        Current -&gt; A</span></pre></td></tr></table></figure>
-<p>上面的根目录下的MyFramework和Resources，以及Versions下面的current 都是文件引用，表明引用文件的位置。真正的代码，资源，header等内容都放在Versions文件夹下面的具体版本文件夹中，Current就指向当前版本的引用。</p>
-<p>关于多语言本地化文件，是按照language_region.lproj的格式命名的，比如en_GB表明英语英国，zh_Hans表示中文中国大陆。</p>
-<h2 id="Bundles的基本使用"><a href="#Bundles的基本使用" class="headerlink" title="Bundles的基本使用"></a>Bundles的基本使用</h2><p>使用bundle主要都是围绕着定位资源路径而来的。包括：获取bundle及其信息（不管是main bundle还是其他bundle），获取资源路径（根据资源名称和类型定位），使用系统API直接获取资源（比如图片、音频、本地化字符串、context help，nibs，Info.plist内容等等），具体使用可以参考  <a href="https://developer.apple.com/documentation/foundation/nsbundle?language=objc" target="_blank" rel="noopener">Class Bundle</a>文档</p>
-<p>在磁盘上查找资源时，Bundle对象遵循特定的搜索模式。首先返回全局资源（即不在特定于语言的.lproj目录中的资源），然后返回特定于区域和语言的资源。此搜索模式表示捆绑包按以下顺序查找资源：</p>
-<ul>
-<li>全局（非本地化）资源</li>
-<li>特定区域的本地化资源（基于用户的区域首选项）</li>
-<li>特定语言的本地化资源（基于用户的语言首选项）</li>
-<li>开发语言资源（由bundle的Info.plist文件中的CFBundleDevelopmentRegion键指定）</li>
-</ul>
-<p>由于全局资源优先于特定语言的资源，因此您不应在应用程序中同时包含给定资源的全局和本地化版本。存在资源的全局版本时，永远不会返回特定语言的版本。这种优先权的原因是性能。如果首先搜索本地化资源，则bundle对象可能会浪费时间在返回全局资源之前搜索不存在的本地化资源。</p>
-<p>在查找资源文件时，bundle对象在确定要返回的文件时会自动考虑许多标准文件名修饰符。可以为特定设备（iphone，ipad）或特定屏幕分辨率（@2x，@ 3x）标记资源。指定所需资源的名称时，请不要包含这些修饰符。 bundle对象选择最适合底层设备的文件。</p>
-<p>参考资料：<br><a href="https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFBundles/AboutBundles/AboutBundles.html#//apple_ref/doc/uid/10000123i-CH100-SW1" target="_blank" rel="noopener">Bundle Programming Guide</a><br><a href="https://developer.apple.com/documentation/foundation/nsbundle?language=objc" target="_blank" rel="noopener">Class Bundle Reference</a></p>
-<h1 id="二、iOS-Xcode工程目录中folder和group的区别"><a href="#二、iOS-Xcode工程目录中folder和group的区别" class="headerlink" title="二、iOS Xcode工程目录中folder和group的区别"></a>二、iOS Xcode工程目录中folder和group的区别</h1><p>说到folder和group大家应该并不陌生，XCode工程目录里面，你会发现两个不同颜色的文件夹，一种是蓝色的，一种是黄色的，最常见的是黄色的。这里我们要探讨的就是黄色和蓝色文件夹的区别：</p>
-<ul>
-<li><p>group （黄色文件夹）一般只在你的工程中是文件夹的形式，但是在本地的目录中还是以散乱的形式放在一起的，除非你是从外部以group的形式引用进来的。（ps：目前版本已经将新建立的分组创建成真正的文件夹）</p>
-</li>
-<li><p>folder （蓝色文件）只能作为资源，整个引用进项目，不参与编译，也就是说，以folder形式引用进来的文件，不能被放在complie sources列表里面。</p>
-</li>
-</ul>
-<p>我拖动外部的文件夹 “切图”到我的xcode工程目录下面，会弹出对话框，如图：<br><img src="/2020/2020-11-06-17:39:09/1604720590663.jpg" alt></p>
-<p>copy，是指文件不在项目的目录下面，例如项目在桌面上，文件在 Download 下，你 copy 就会被复制到项目里面。如果文件原本就在项目里面，则不执行任何操作。这里不管它，重点是下面的单选框。</p>
-<p>这里我选择的是以folder的形式引用文件夹，点击完成，如下图所示，文件夹是蓝色的，并且编译文件列表里面没有”切图” 这个文件，证明文件夹引用，只会引用文件夹，文件夹里面的东西都会直接拷贝到bundle包，不参与编译。</p>
-<p><img src="/2020/2020-11-06-17:39:09/1604720838878.jpg" alt></p>
-
+        <h1 id="一、Bundles是什么？"><a href="#一、Bundles是什么？" class="headerlink" title="一、Bundles是什么？"></a>一、Bundles是什么？</h1>
+        
+          <a class="article-more-a" href="/2020/2020-11-06-17:39:09/#more">more >></a>
+        
       
 
       
@@ -949,82 +973,6 @@
 
 
   
-    <article id="post-日常笔记📒" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/Thu%20Mar%2019%202020%2015:40:37%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)/">随手记录📝</a>
-    </h1>
-  
-
-        
-        <a href="/2020/Thu%20Mar%2019%202020%2015:40:37%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)/" class="archive-article-date">
-  	<time datetime="2020-03-19T07:40:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-19</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="UML类图"><a href="#UML类图" class="headerlink" title="UML类图"></a>UML类图</h3>
-        
-          <a class="article-more-a" href="/2020/Thu%20Mar%2019%202020%2015:40:37%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color3">随笔</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/Thu%20Mar%2019%202020%2015:40:37%20GMT+0800%20(%E4%B8%AD%E5%9B%BD%E6%A0%87%E5%87%86%E6%97%B6%E9%97%B4)/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" target="_blank" rel="noopener" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &amp;raquo;</a>
@@ -1134,6 +1082,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color3">随笔</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color5">架构概念</a>
               </li>
              
@@ -1143,10 +1095,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color1">组件库制作</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color3">随笔</a>
               </li>
              
               <li class="article-tag-list-item">
