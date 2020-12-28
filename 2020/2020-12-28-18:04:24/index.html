@@ -6,17 +6,17 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>iOS对象所占内存大小之内存对齐 | X的博客</title>
+  <title>将Flutter Module打包成pod私有库一键集成 | X的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="一、获取NSObject对象占用的空间大小">
-<meta name="keywords" content="iOS">
+  <meta name="description" content="前言">
+<meta name="keywords" content="Flutter">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS对象所占内存大小之内存对齐">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;2020-11-18-20:59:08&#x2F;index.html">
+<meta property="og:title" content="将Flutter Module打包成pod私有库一键集成">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;2020-12-28-18:04:24&#x2F;index.html">
 <meta property="og:site_name" content="X的博客">
-<meta property="og:description" content="一、获取NSObject对象占用的空间大小">
+<meta property="og:description" content="前言">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2020-11-19T07:29:44.544Z">
+<meta property="og:updated_time" content="2020-12-28T10:22:41.791Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="X的博客" type="application/atom+xml">
@@ -177,159 +177,79 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-iOS对象所占内存大小之内存对齐" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-将Flutter-Module打包成pod私有库一键集成" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      iOS对象所占内存大小之内存对齐
+      将Flutter Module打包成pod私有库一键集成
     </h1>
   
 
         
-        <a href="/2020/2020-11-18-20:59:08/" class="archive-article-date">
-  	<time datetime="2020-11-18T12:59:08.136Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-18</time>
+        <a href="/2020/2020-12-28-18:04:24/" class="archive-article-date">
+  	<time datetime="2020-12-28T10:04:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-12-28</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="一、获取NSObject对象占用的空间大小"><a href="#一、获取NSObject对象占用的空间大小" class="headerlink" title="一、获取NSObject对象占用的空间大小"></a>一、获取NSObject对象占用的空间大小</h1><a id="more"></a>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><a id="more"></a>
+
+<p>   用 Flutter 来开发，分两种，一种是一个纯Flutter项目开发，但是目前除了新开的一个纯 Flutter 项目，很大一部分都是 老项目接入 Flutter 来混编。<br>   在 <a href="https://flutter.dev/docs/development/add-to-app/ios/project-setup" target="_blank" rel="noopener">Flutter 官网 - Adding to an iOS app</a> 这里，官方也给出了一些将 Flutter 集成进入现有 iOS 项目的方法。但是，这些都多多少少的不符合我们的需求。</p>
+<h2 id="介绍下Flutter-Module"><a href="#介绍下Flutter-Module" class="headerlink" title="介绍下Flutter Module"></a>介绍下Flutter Module</h2><p>想要把Flutter集成进现有的iOS项目，我们就必须使用Flutter Module。<br>那就先用命令创建一个Flutter Module</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">flutter create --template module flutter-test-module</span></pre></td></tr></table></figure>
+
+<p>![](将Flutter Module打包成pod私有库一键集成/image111.png)</p>
+<p>Flutter App 和 Flutter Module 的不同之处在于 <code>pubspec.yaml</code> 最后一段：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"># This section identifies your Flutter project as 123456789 module meant for</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">  # embedding in 123456789 native host app.  These identifiers should _not_ ordinarily</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">  # be changed after generation - they are used to ensure that the tooling can</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">  # maintain consistency when adding or modifying assets and plugins.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">  # They also do not have any bearing on your native host application&#39;s</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">  # identifiers, which may be completely independent or the same as these.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">  module:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">    androidX: true</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">    androidPackage: com.example.flutter_test_module</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">    iosBundleIdentifier: com.example.flutterTestModule</span></pre></td></tr></table></figure>
+<p>这里面设置了是否使用 androidx，Android 和 iOS 的 APP id。</p>
+<h2 id="iOS原生项目所需要的文件"><a href="#iOS原生项目所需要的文件" class="headerlink" title="iOS原生项目所需要的文件"></a>iOS原生项目所需要的文件</h2><p>先说一下，iOS 原生项目引入 Flutter Module 需要如下 Framework：</p>
 <ol>
-<li><p>创建一个 NSObject 对象, 分别调用 class_getInstanceSize 和 malloc_size方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">NSObject *obj &#x3D; [[NSObject alloc] init];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 需要导入 #import &lt;objc&#x2F;runtime.h&gt;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">NSLog(@&quot;%zd&quot;, class_getInstanceSize([NSObject class]));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"> </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 需要导入 #import &lt;malloc&#x2F;malloc.h&gt;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">NSLog(@&quot;%zd&quot;, malloc_size((__bridge const void *)(obj)));</span></pre></td></tr></table></figure></li>
-<li><p>查看Log</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">2019-11-05 15:10:22.210505+0800 Interview001-OC对象的本质[9215:816956] 8</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">2019-11-05 15:10:22.210675+0800 Interview001-OC对象的本质[9215:816956] 16</span></pre></td></tr></table></figure>
-</li>
-<li><p>可以看出系统开辟了16个字节, 但是该对象只是用了8个字节，这是为什么呢?</p>
-</li>
-<li><p>点进 NSObject 可以看到下面的代码, NSObject 对象真正的是一个结构体指针, 所以会占用8个字节。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;&#x2F; An opaque type that represents an Objective-C class.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">typedef struct objc_class *Class;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"> </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">@interface NSObject &lt;NSObject&gt; &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    Class isa ;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure></li>
-<li><p>在 <a href="https://opensource.apple.com/tarballs/" target="_blank" rel="noopener">OpenSource</a> 找到 runtime 源码, 搜索 class_getInstanceSize 可以找到下面的代码, 可以看出 class_getInstanceSize 获取的是类的成员变量的 size, 并不是一个对象所占用的空间。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">size_t class_getInstanceSize(Class cls)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    if (!cls) return 0;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    return cls-&gt;alignedInstanceSize();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; Class&#39;s ivar size rounded up to 123456789 pointer-size boundary.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">uint32_t alignedInstanceSize() &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">    return word_align(unalignedInstanceSize());</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">size_t instanceSize(size_t extraBytes) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">    size_t size &#x3D; alignedInstanceSize() + extraBytes;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">    &#x2F;&#x2F; CF requires all objects be at least 16 bytes.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">    if (size &lt; 16) size &#x3D; 16;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">    return size;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
-</li>
-<li><p>那为什么会分配16个字节了? 也是在 runtime 里找到了答案, 当 size &lt; 16 时, 会默认分配16个字节。<br>可以参照 <a href="https://juejin.im/post/5abdd56df265da2396127e6b" target="_blank" rel="noopener">这篇文章</a> 把.m文件编译成.cpp文件, 查看 NSObject真正的实现, 可以理解是对应 c++ 里的结构体。</p>
-</li>
+<li>Flutter.framework</li>
+<li>App.framework</li>
+<li>FlutterPluginRegistrant.framework （如果有用到原生的插件 - 非纯 dart 编写）</li>
+<li>Pods_Runner.framework（如果有用到原生的插件 - 非纯 dart 编写）</li>
+<li>*.framework（插件的 framework）</li>
 </ol>
-<h1 id="二、自定义对象所占空间"><a href="#二、自定义对象所占空间" class="headerlink" title="二、自定义对象所占空间"></a>二、自定义对象所占空间</h1><ol>
-<li><p>自定义一个Person类</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">@interface Person : NSObject</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"> &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"> &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"> @end</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"> </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"> @implementation  Person</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"> @end</span></pre></td></tr></table></figure>
-<p>打印当前对象</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">Person *p &#x3D; [[Person alloc] init];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">NSLog(@&quot;%zd&quot;, class_getInstanceSize([Person class]));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">NSLog(@&quot;%zd&quot;, malloc_size((__bridge const void *)(p)));</span></pre></td></tr></table></figure>
+<p>Flutter创建完成后，先来给iOS打个包</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">flutter build ios --release--no-codesign</span></pre></td></tr></table></figure>
 
-<p>得到的结果和 NSObject 对象一样的</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">2019-11-05 15:30:11.991698+0800 Interview001-OC对象的本质[9360:864510] 8</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">2019-11-05 15:30:11.991704+0800 Interview001-OC对象的本质[9360:864510] 16</span></pre></td></tr></table></figure>
-</li>
-<li><p>给自定义对象添加1个成员变量, 再次打印</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">@interface Person : NSObject</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    int _age;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">@end</span></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">2019-11-05 15:31:56.767972+0800 Interview001-OC对象的本质[9385:868476] 16</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">2019-11-05 15:31:56.767978+0800 Interview001-OC对象的本质[9385:868476] 16</span></pre></td></tr></table></figure></li>
-<li><p>再次添加成员变量, 再次打印</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">@interface Person : NSObject</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    int _age;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    int _number;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">@end</span></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">2019-11-05 15:34:16.503491+0800 Interview001-OC对象的本质[9414:874058] 16</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">2019-11-05 15:34:16.503497+0800 Interview001-OC对象的本质[9414:874058] 16</span></pre></td></tr></table></figure>
-</li>
-<li><p>很奇怪, 没有变化啊? 我们编程成.cpp再来分析</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">struct Person_IMPL &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"> struct NSObject_IMPL NSObject_IVARS;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"> int _age;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"> int _number;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">&#125;;</span></pre></td></tr></table></figure>
-</li>
-<li><p>这时自定义对象包含了</p>
+<p>然后看一下打包出来的东西，路径为 <code>build-&gt;ios-&gt;Release-iphoneos</code><br>![](将Flutter Module打包成pod私有库一键集成/image222.png)</p>
+<p>如果有第三方库的话，这里面应该有上面说的3、4、5的framework，但是我们刚创建项目，什么都没有加，所以是没有任何framework的。<br>然后去 <code>.ios/Flutter</code> 里找 1、2：<br>![](将Flutter Module打包成pod私有库一键集成/image333.png)</p>
+<p>但是正式开发的时候我们不可能什么插件都不用，所以加上一个<a href="https://pub.dev/packages/shared_preferences" target="_blank" rel="noopener">shared_preferences</a>，再来打包看一下build文件夹：<br>![](将Flutter Module打包成pod私有库一键集成/image444.png)</p>
+<p>可以看到确实出现了我们上面说的 3、4、5 framework，这样我们所需的 framework 全部集齐。</p>
+<h2 id="使用Cocoapods-Git-管理"><a href="#使用Cocoapods-Git-管理" class="headerlink" title="使用Cocoapods + Git 管理"></a>使用Cocoapods + Git 管理</h2><p>这里有一点，就是  <code>Flutter.framework</code>  超级大，有四五百兆，我们把它单独放在了一个 pod 里，而剩下的一些每次新增插件或变更代码都会跟着变动，所以他们是一个单独的 pod。<br>也就是说，该 Flutter Module 一共有三个 git 仓库：</p>
 <ul>
-<li>1个结构体指针 (8字节)</li>
-<li>1个 int _age (4字节)</li>
-<li>1个 int _number (4字节)<br>8 + 4 + 4 = 16 字节</li>
+<li>Flutter Module 项目的仓库（编写代码等）</li>
+<li>Flutter Module 打包出来的 frameworks（不包含 Flutter.framework）</li>
+<li>Flutter.framework 仓库</li>
 </ul>
-</li>
+<p>这样的好处就是在我们编写完代码，运行 sh 文件的时候，不用去下载一个四五百兆的 flutter 引擎，脚本速度提升很快，并且其他的 iOS 项目也可以引用。</p>
+<ol>
+<li>接下来使用命令<code>pod lib create FlutterCoreModule</code> 来创建一个名为<code>FlutterCoreModule</code>的私有库来管理 <code>Flutter.framework</code>。<br>修改 <code>KSFlutterCoreModule.podspec</code>文件：</li>
 </ol>
-<ul>
-<li>没有添加任何成员变量时, 只有1个结构体指针, 所以会是8字节</li>
-<li>添加1个成员变量时, 有1个结构体指针, 和1个 int 类型的值, 那就是 8 + 4 = 12, 为什么 class_getInstanceSize 得到的结果是16了. 其实扩容基数是8(内存对齐原因, 结构体的大小必须是最大成员大小的倍数), 8个字节不够了, 就开辟了8*2个字节, 依此类推  </li>
-<li>添加了2个成员变量时, 有1个结构体指针, 和2个 int 类型的值,那就是 8 + 4 + 4 = 16</li>
-</ul>
-<ol start="6">
-<li>再添加一个成员变量</li>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">s.vendored_frameworks &#x3D; [&#39;FlutterCoreModule&#x2F;Frameworks&#x2F;*.framework&#39;]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">s.source_files &#x3D; &#39;FlutterCoreModule&#x2F;Frameworks&#x2F;*.framework&#x2F;Headers&#x2F;*.h&#39;</span></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>再使用命令<code>pod lib create FlutterModule</code> 来创建一个名为<code>FlutterModule</code>的私有库来管理<code>Flutter Module</code> 打包出来的 frameworks（不包含 Flutter.framework）。<br>修改 <code>FlutterModule.podspec</code>文件：</li>
 </ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">@interface Person : NSObject</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    int _age;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    int _number;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    int _sex;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">@end</span></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">s.vendored_frameworks &#x3D; [&#39;KSFlutterModule&#x2F;Frameworks&#x2F;*.framework&#39;]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">s.source_files &#x3D; &#39;KSFlutterModule&#x2F;Frameworks&#x2F;*.framework&#x2F;Headers&#x2F;*.h&#39;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">s.dependency &#39;KSFlutterCoreModule&#39;</span></pre></td></tr></table></figure>
 
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">2019-11-05 15:48:24.959113+0800 Interview001-OC对象的本质[9511:896453] 24</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">2019-11-05 15:48:24.959120+0800 Interview001-OC对象的本质[9511:896453] 32</span></pre></td></tr></table></figure>
+<h2 id="在原生工程中使用"><a href="#在原生工程中使用" class="headerlink" title="在原生工程中使用"></a>在原生工程中使用</h2><p>到这里pod私有库的制作完成了， Flutter Module 就完全引入到了现有的 iOS 工程中，关于如何运行代码，可以去 <a href="https://flutter.dev/docs/development/add-to-app/ios/add-flutter-screen?tab=engine-objective-c-tab" target="_blank" rel="noopener">官方文档 - Adding a Flutter screen to an iOS app</a> 中查找。</p>
+<p>看下集成的示例代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">@import UIKit;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">@import Flutter;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">@interface KSAppDelegate : FlutterAppDelegate &lt;UIApplicationDelegate&gt;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">@property (strong, nonatomic) FlutterEngine *flutterEngine;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">@end</span></pre></td></tr></table></figure>
 
-<p>可以看出 class_getInstanceSize 已经是8*3=24字节了<br>但是 malloc_size 却是 32了, 因为是以16为基数来扩容的, 因为 iOS 在分配对象内存时, 都是以16倍数来分配的</p>
-<ol start="7">
-<li>探索下系统是如何内存对齐的</li>
-</ol>
-<ul>
-<li>运算符的含义</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th align="center">运算符</th>
-<th align="center">含义</th>
-<th align="center">描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">&gt;&gt;</td>
-<td align="center">右移</td>
-<td align="center">将一个数的各二进制位右移N位，移到右端的低位被舍弃，对于无符号数，高位补0</td>
-</tr>
-<tr>
-<td align="center">&lt;&lt;</td>
-<td align="center">左移</td>
-<td align="center">用来将一个数的各二进制位全部左移N位，高位舍弃，低位补0</td>
-</tr>
-<tr>
-<td align="center">&amp;</td>
-<td align="center">按位与</td>
-<td align="center">如果两个相应的二进制位都为1，则该位的结果值为1，否则为0</td>
-</tr>
-<tr>
-<td align="center">I</td>
-<td align="center">按位或</td>
-<td align="center">两个相应的二进制位中只要有一个为1，该位的结果值为1，否则为0</td>
-</tr>
-<tr>
-<td align="center">~</td>
-<td align="center">取反</td>
-<td align="center">对这个存储单元当前的值取反，也就是原来数中为1的变为0，0变为1</td>
-</tr>
-</tbody></table>
-<ul>
-<li><p>看一下源码</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">static inline uint32_t word_align(uint32_t x) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">  return (x + WORD_MASK) &amp; ~WORD_MASK;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"> </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">static inline size_t word_align(size_t x) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    return (x + WORD_MASK) &amp; ~WORD_MASK;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">static inline size_t align16(size_t x) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">      return (x + size_t(15)) &amp; ~size_t(15);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
-<p>那么我们就不难理解了，分析一下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"> &#x2F;**</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">return (x + WORD_MASK) &amp; ~WORD_MASK;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">假设x为6</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">0000 0111    7</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">1111  1000    ~WORD_MASK</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">0000 1101    6 + 7  &#x3D;   13</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">0000 1000    (x + WORD_MASK) &amp; ~WORD_MASK  结果：8</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">*&#x2F;</span></pre></td></tr></table></figure>
-</li>
-<li><p>我们自己来写个方法，换一个方式来达到系统内存对齐效果：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">class_getInstanceSize扩容基数是8：</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    int funcMethod(int num) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">      return (num + 7) &gt;&gt; 3 &lt;&lt; 3;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; &gt;&gt; 右移  将一个数的各二进制位右移N位，移到右端的低位被舍弃，对于无符号数，高位补0。</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; &lt;&lt; 左移  用来将一个数的各二进制位全部左移N位，高位舍弃，低位补0。</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; 0000 1101    6 + 7  &#x3D;   13</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; 0000 0001    &gt;&gt; 3</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; 0001 1000    &lt;&lt; 3       8</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; 0001 0011    12 + 7  &#x3D;  19</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; 0000 0010    &gt;&gt; 3</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">      &#x2F;&#x2F; 0001 0000    &lt;&lt; 3       16</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">  &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">  int main(int argc, char * argv[]) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">      @autoreleasepool &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">          NSLog(@&quot;%d&quot;,funcMethod(6));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">          NSLog(@&quot;%d&quot;,funcMethod(12));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line">  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">          return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">23</span></pre></td><td class="code"><pre><span class="line">      &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">24</span></pre></td><td class="code"><pre><span class="line">  &#125;</span></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">#import &quot;KSAppDelegate.h&quot;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">#import &lt;FlutterPluginRegistrant&#x2F;GeneratedPluginRegistrant.h&gt;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">@implementation KSAppDelegate</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">    self.flutterEngine &#x3D; [[FlutterEngine alloc] initWithName:@&quot;my flutteer engine&quot;];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">    [self.flutterEngine run];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">    [GeneratedPluginRegistrant registerWithRegistry:self.flutterEngine];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">    </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">    return YES;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
 
-<p>查看下log打印：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">2020-11-19 14:29:16.424755+0800 Demo1[6321:2027201] 8</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">2020-11-19 14:29:16.425308+0800 Demo1[6321:2027201] 16</span></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">@import Flutter;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">#import &quot;KSViewController.h&quot;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">#import &quot;KSAppDelegate.h&quot;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">@interface KSViewController ()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">@end</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">@implementation KSViewController</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">- (void)viewDidLoad</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">    [super viewDidLoad];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">	&#x2F;&#x2F; Do any additional setup after loading the view, typically from 123456789 nib.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">- (IBAction)showFlutterAction:(id)sender &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">    FlutterEngine *flutterEngine &#x3D; ((KSAppDelegate *)UIApplication.sharedApplication.delegate).flutterEngine;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">    FlutterViewController *flutterVC &#x3D; [[FlutterViewController alloc] initWithEngine:flutterEngine nibName:nil bundle:nil];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">    [self presentViewController:flutterVC animated:YES completion:NULL];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
 
-<p>那么funcMethod具体做了什么？</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"> return (num + 7) &gt;&gt; 3 &lt;&lt; 3;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; &gt;&gt; 右移  将一个数的各二进制位右移N位，移到右端的低位被舍弃，对于无符号数，高位补0。</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; &lt;&lt; 左移  用来将一个数的各二进制位全部左移N位，高位舍弃，低位补0。</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 0000 1101    6 + 7  &#x3D;   13</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 0000 0001    &gt;&gt; 3</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 0001 1000    &lt;&lt; 3       结果：8</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 0001 0011    12 + 7  &#x3D;  19</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 0000 0010    &gt;&gt; 3</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 0001 0000    &lt;&lt; 3       结果：16</span></pre></td></tr></table></figure>
-
-<p>malloc_size扩容基数是16：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"> int funcMethod(int num) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    return (num + 15) &gt;&gt; 4 &lt;&lt; 4;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">int main(int argc, char * argv[]) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    @autoreleasepool &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">        NSLog(@&quot;%d&quot;,funcMethod(8));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">        NSLog(@&quot;%d&quot;,funcMethod(20));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">        return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
-
-</li>
-</ul>
-<p>查看下log打印：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">2020-11-19 14:47:36.265334+0800 Demo1[6565:2044463] 16</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">2020-11-19 14:47:36.265933+0800 Demo1[6565:2044463] 32</span></pre></td></tr></table></figure>
-
-<h1 id="三、-结论"><a href="#三、-结论" class="headerlink" title="三、 结论"></a>三、 结论</h1><ul>
-<li>1个 NSObject 对象占用了16个字节</li>
-<li>1个自定义对象占用了几个字节, 需要有多少成员变量, 同时还要计算上 NSObject 的 isa 指针大小, 同时为了对齐, 必须是16的倍数</li>
-</ul>
-<h1 id="四、-注意"><a href="#四、-注意" class="headerlink" title="四、 注意"></a>四、 注意</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">- 如果自定义类有继承关系, 如 Student 继承于 Person, 要继续父类的成员变量</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">- 注意内存对齐问题, iOS 分配内存问题</span></pre></td></tr></table></figure>
-
-
-
-
-
-
+<p>再来看看效果图：<br>![](将Flutter Module打包成pod私有库一键集成/WechatIMG185.png)</p>
+<p>喜大普奔，这就完成啦<code>Flutter</code>页面嵌入到原生项目的过程啦。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这样的集成方案感觉是比较方便的，Flutter端写完业务代码后build出来包后对应更新<code>FlutterModule</code>，iOS端直接<code>pod update</code>超级简单和方便。<br>如有缺陷，希望大家提出，共同改进！🤝</p>
 
       
 
@@ -374,7 +294,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color4">iOS</a>
+        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color3">Flutter</a>
         		</li>
       		
 		</ul>
@@ -430,7 +350,7 @@
     <a class="close js-modal-close" href="javascript:;" target="_blank" rel="noopener"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2020/2020-11-18-20:59:08/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2020/2020-12-28-18:04:24/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -444,18 +364,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2020/2020-11-26-15:55:35/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          Xcode快捷指令
-        
-      </div>
-    </a>
   
-  
-    <a href="/2020/2020-11-06-17:39:09/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">iOS基础Bundle、folder、group详解</div>
+    <a href="/2020/2020-11-26-17:25:35/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Instruments分析和使用</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -482,7 +393,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一、获取NSObject对象占用的空间大小"><span class="toc-number">1.</span> <span class="toc-text">一、获取NSObject对象占用的空间大小</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#二、自定义对象所占空间"><span class="toc-number">2.</span> <span class="toc-text">二、自定义对象所占空间</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#三、-结论"><span class="toc-number">3.</span> <span class="toc-text">三、 结论</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#四、-注意"><span class="toc-number">4.</span> <span class="toc-text">四、 注意</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#介绍下Flutter-Module"><span class="toc-number">2.</span> <span class="toc-text">介绍下Flutter Module</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#iOS原生项目所需要的文件"><span class="toc-number">3.</span> <span class="toc-text">iOS原生项目所需要的文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用Cocoapods-Git-管理"><span class="toc-number">4.</span> <span class="toc-text">使用Cocoapods + Git 管理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#在原生工程中使用"><span class="toc-number">5.</span> <span class="toc-text">在原生工程中使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">6.</span> <span class="toc-text">总结</span></a></li></ol>
                     </div>
                 </span>
             </div>
