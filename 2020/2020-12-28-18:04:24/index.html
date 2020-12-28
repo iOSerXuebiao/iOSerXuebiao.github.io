@@ -21,7 +21,7 @@
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;2020-12-28-18:04:24&#x2F;image333.png">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;2020-12-28-18:04:24&#x2F;image444.png">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;2020-12-28-18:04:24&#x2F;WechatIMG185.png">
-<meta property="og:updated_time" content="2020-12-28T10:27:29.735Z">
+<meta property="og:updated_time" content="2020-12-28T10:32:08.827Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;2020-12-28-18:04:24&#x2F;image111.png">
   
@@ -224,8 +224,10 @@
 <p>Flutter创建完成后，先来给iOS打个包</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">flutter build ios --release--no-codesign</span></pre></td></tr></table></figure>
 
-<p>然后看一下打包出来的东西，路径为 <code>build-&gt;ios-&gt;Release-iphoneos</code><br><img src="/2020/2020-12-28-18:04:24/image222.png" alt></p>
-<p>如果有第三方库的话，这里面应该有上面说的3、4、5的framework，但是我们刚创建项目，什么都没有加，所以是没有任何framework的。<br>然后去 <code>.ios/Flutter</code> 里找 1、2：<br><img src="/2020/2020-12-28-18:04:24/image333.png" alt></p>
+<p>然后看一下打包出来的东西，路径为 <code>build-&gt;ios-&gt;Release-iphoneos</code></p>
+<p><img src="/2020/2020-12-28-18:04:24/image222.png" alt></p>
+<p>如果有第三方库的话，这里面应该有上面说的3、4、5的framework，但是我们刚创建项目，什么都没有加，所以是没有任何framework的。<br>然后去 <code>.ios/Flutter</code> 里找 1、2：</p>
+<p><img src="/2020/2020-12-28-18:04:24/image333.png" alt></p>
 <p>但是正式开发的时候我们不可能什么插件都不用，所以加上一个<a href="https://pub.dev/packages/shared_preferences" target="_blank" rel="noopener">shared_preferences</a>，再来打包看一下build文件夹：<br><img src="/2020/2020-12-28-18:04:24/image444.png" alt></p>
 <p>可以看到确实出现了我们上面说的 3、4、5 framework，这样我们所需的 framework 全部集齐。</p>
 <h2 id="使用Cocoapods-Git-管理"><a href="#使用Cocoapods-Git-管理" class="headerlink" title="使用Cocoapods + Git 管理"></a>使用Cocoapods + Git 管理</h2><p>这里有一点，就是  <code>Flutter.framework</code>  超级大，有四五百兆，我们把它单独放在了一个 pod 里，而剩下的一些每次新增插件或变更代码都会跟着变动，所以他们是一个单独的 pod。<br>也就是说，该 Flutter Module 一共有三个 git 仓库：</p>
