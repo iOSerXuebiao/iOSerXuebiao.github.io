@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="X的博客">
 <meta property="og:description" content="SEL和Method和IMP分别说下，再谈下对IMP的理解">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2020-07-02T10:51:44.000Z">
+<meta property="og:updated_time" content="2021-03-03T06:32:20.007Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="X的博客" type="application/atom+xml">
@@ -198,7 +198,17 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h2 id="SEL和Method和IMP分别说下，再谈下对IMP的理解"><a href="#SEL和Method和IMP分别说下，再谈下对IMP的理解" class="headerlink" title="SEL和Method和IMP分别说下，再谈下对IMP的理解"></a>SEL和Method和IMP分别说下，再谈下对IMP的理解</h2><a id="more"></a>
-<p>在 Objective-C 中，selector，Method 和 implementation(IMP) 都是 Runtime 的组成部分。在实际开发中它们常常可以相互转换来处理消息的发送。<br><strong>Selector</strong><br>定义：<code>typedef struct objc_selector *SEL</code><br>翻译成中文叫做选择子或者选择器，选择子代表方法在 Runtime 期间的标识符。为 SEL 类型，虽然 SEL 是 objc_selector 结构体指针，但实际上它只是<strong>一个 C 字符串</strong>。在类加载的时候，编译器会生成与方法相对应的选择子，并注册到 Objective-C 的 Runtime 运行系统。</p>
+<p>在 Objective-C 中，SEL/selector，Method 和 implementation(IMP) 都是 Runtime 的组成部分。在实际开发中它们常常可以相互转换来处理消息的发送。</p>
+<p><strong>SEL</strong><br>先看看定义：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">Objc.h</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;&#x2F; An opaque type that represents a method selector.代表一个方法的不透明类型</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">typedef struct objc_selector *SEL;</span></pre></td></tr></table></figure>
+
+<p><strong>Selector</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">@property SEL selector;</span></pre></td></tr></table></figure>
+
+<p>要先说明下selector和SEL的关系，我在写本文的时候，其实搜索的是selector，直到我看到了selector的定义，才发现我理解一直不对。</p>
+<p>在文档中，selector的定义都是这样声明，也就是说：selector是SEL的一个实例，只是在iOS中，selector的使用是如此的频繁，我们才会把他当成一个概念。</p>
+<p>selector怎么理解呢？我们可以想想股票，比如市场上有如此多公司在纳斯达克上市，而且他们的名字又非常的长，或者有些公司的名称也是相似的，都是**有限公司。那当市场去指定一个股票的时候，效率会非常低，当你着急想买股票的时候，你会跟你的经纪人说：“hi，peter，给我买一百股Tuniu limited liability company的股票吗？”，也许等你说完，经纪人输入完，市场就变化了，所以纳斯达克通常用代码，比如“TOUR”.这里的selector有类似的作用，就是让我们能够快速找到对应的函数。</p>
+<p>selector翻译成中文叫做选择子或者选择器，选择子代表方法在 Runtime 期间的标识符。为 SEL 类型，虽然 SEL 是 objc_selector 结构体指针，但实际上它只是<strong>一个 C 字符串</strong>。在类加载的时候，编译器会生成与方法相对应的选择子，并注册到 Objective-C 的 Runtime 运行系统。</p>
 <p>常见的有两种方式来获取/创建选择子:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">SEL selA &#x3D; @selector(setString:);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">SEL selB &#x3D; sel_registerName(&quot;setString:&quot;);</span></pre></td></tr></table></figure>
 
@@ -211,17 +221,20 @@
 <p>如果某个类实现了 setString：方法，那么以上两个选择子传入 respondsToSelector() 方法返回的结果都将为 YES。</p>
 <p>不同类中相同名字的方法所对应的方法选择子是相同的，即使方法名字相同而变量类型不同也会导致它们具有相同的方法选择子。</p>
 <p><strong>Implementation(IMP):</strong></p>
-<p>定义：<code>typedef id (*IMP)(id, SEL, ...)</code></p>
+<p>看一下 <code>IMP</code> 的定义：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;&#x2F; A pointer to the function of a method implementation.  指向一个方法实现的指针</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">typedef id (*IMP)(id, SEL, ...); </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">#endif</span></pre></td></tr></table></figure>
+
 <p>代表函数指针，即函数执行的入口。该函数使用标准的 C 调用。第一个参数指向 self（它代表当前类实例的地址，如果是类则指向的是它的元类），作为消息的接受者；第二个参数代表方法的选择子；… 代表可选参数，前面的 id 代表返回值。</p>
 <p>举个AF中的源码例子：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">        NSURLSessionConfiguration *configuration &#x3D; [NSURLSessionConfiguration ephemeralSessionConfiguration];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">        NSURLSession *session &#x3D; [NSURLSession sessionWithConfiguration:configuration];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">#pragma GCC diagnostic push</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">#pragma GCC diagnostic ignored &quot;-Wnonnull&quot;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">        NSURLSessionDataTask *localDataTask &#x3D; [session dataTaskWithURL:nil];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">#pragma clang diagnostic pop</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">        IMP originalAFResumeIMP &#x3D; method_getImplementation(class_getInstanceMethod([self class], @selector(af_resume)));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">        Class currentClass &#x3D; [localDataTask class];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">        </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">        while (class_getInstanceMethod(currentClass, @selector(resume))) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">            Class superClass &#x3D; [currentClass superclass];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">            IMP classResumeIMP &#x3D; method_getImplementation(class_getInstanceMethod(currentClass, @selector(resume)));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">            IMP superclassResumeIMP &#x3D; method_getImplementation(class_getInstanceMethod(superClass, @selector(resume)));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">            if (classResumeIMP !&#x3D; superclassResumeIMP &amp;&amp;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">                originalAFResumeIMP !&#x3D; classResumeIMP) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">                [self swizzleResumeAndSuspendMethodForClass:currentClass];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">            &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">            currentClass &#x3D; [currentClass superclass];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">        &#125;</span></pre></td></tr></table></figure>
 
-<p><strong>Method</strong><br>定义：<code>typedef struct objc_method *Method</code><br>Method 对开发者来说是一种不透明的类型，被隐藏在我们平时书写的类或对象的方法背后。它是一个 objc_method 结构体指针，objc_method 的定义为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;&#x2F; Method</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">struct objc_method &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    SEL method_name; </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    char *method_types;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    IMP method_imp;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">&#125;;</span></pre></td></tr></table></figure>
+<p><strong>Method</strong><br>看一下 <code>Method</code> 的定义：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">runtime.h</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;&#x2F; An opaque type that represents a method in a class definition.代表类定义中一个方法的不透明类型</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">typedef struct objc_method *Method;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">struct objc_method &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    SEL method_name                                          OBJC2_UNAVAILABLE;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    char *method_types                                       OBJC2_UNAVAILABLE;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">    IMP method_imp                                           OBJC2_UNAVAILABLE;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+<p>它是一个 objc_method 结构体指针</p>
 <ul>
-<li>方法名 method_name 类型为 SEL，前面提到过相同名字的方法即使在不同类中定义，它们的方法选择器也相同。</li>
-<li>方法类型 method_types 是个 char 指针，其实存储着方法的参数类型和返回值类型，即是 Type Encoding 编码。</li>
-<li>method_imp 指向方法的实现，本质上是一个函数的指针，就是前面讲到的 Implementation。</li>
+<li><strong>方法名</strong> method_name 类型为 SEL，前面提到过相同名字的方法即使在不同类中定义，它们的方法选择器也相同。</li>
+<li><strong>方法类型</strong> method_types 是个 char 指针，其实存储着方法的参数类型和返回值类型，即是 Type Encoding 编码。</li>
+<li><strong>方法实现</strong> method_imp 指向方法的实现，本质上是一个函数的指针，就是前面讲到的 Implementation。</li>
 </ul>
 <p>举个AF中的源码例子：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">static inline void af_swizzleSelector(Class theClass, SEL originalSelector, SEL swizzledSelector) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    Method originalMethod &#x3D; class_getInstanceMethod(theClass, originalSelector);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    Method swizzledMethod &#x3D; class_getInstanceMethod(theClass, swizzledSelector);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    method_exchangeImplementations(originalMethod, swizzledMethod);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
@@ -502,11 +515,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color5">资料整理</a>
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color5">设计原则</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color5">设计原则</a>
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color5">资料整理</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -518,11 +531,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color4">组件化</a>
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color1">组件库制作</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color1">组件库制作</a>
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color4">组件化</a>
               </li>
              
               <li class="article-tag-list-item">
