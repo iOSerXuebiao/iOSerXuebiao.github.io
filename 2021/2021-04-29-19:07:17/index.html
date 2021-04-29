@@ -6,13 +6,17 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2021/2 | X的博客</title>
+  <title>AutoreleasePool底层源码分析 | X的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="X的博客">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;archives&#x2F;2021&#x2F;02&#x2F;index.html">
+  <meta name="description" content="前言">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AutoreleasePool底层源码分析">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2021&#x2F;2021-04-29-19:07:17&#x2F;index.html">
 <meta property="og:site_name" content="X的博客">
+<meta property="og:description" content="前言">
 <meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2021-04-29T12:05:42.390Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="X的博客" type="application/atom+xml">
@@ -173,36 +177,153 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-AutoreleasePool底层源码分析" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2021" class="archive-year">2021</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2021/2021-02-25-19:15:48/" class="archive-article-date">
-  	<time datetime="2021-02-25T11:15:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-02-25</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2021/2021-02-25-19:15:48/">AFNetworking源码剖析（三）</a>
+    <h1 class="article-title" itemprop="name">
+      AutoreleasePool底层源码分析
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2021/2021-04-29-19:07:17/" class="archive-article-date">
+  	<time datetime="2021-04-29T11:07:17.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-04-29</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><a id="more"></a>
+<p>在阳神的 <a href="http://blog.sunnyxx.com/2014/10/15/behind-autorelease/" target="_blank" rel="noopener">黑幕背后的Autorelease</a> 文章中已经把 AutoreleasePool 核心逻辑讲明白了，不过多是结论性的东西，笔者通读源码以探究更多的细节，验证一下老生常谈的一些结论。</p>
+<p>源码基于 Runtime 750。</p>
+<h1 id="一、-autoreleasepool-干了些什么"><a href="#一、-autoreleasepool-干了些什么" class="headerlink" title="一、@autoreleasepool {} 干了些什么"></a>一、@autoreleasepool {} 干了些什么</h1><p>main.m 文件代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">int main(int argc, const char * argv[]) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    @autoreleasepool &#123;&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    return 0;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
+<p>使用 <code>clang -rewrite-objc</code> <code>main.m</code> 查看经过编译器前端处理的代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">struct __AtAutoreleasePool &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">  __AtAutoreleasePool() &#123;atautoreleasepoolobj &#x3D; objc_autoreleasePoolPush();&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">  ~__AtAutoreleasePool() &#123;objc_autoreleasePoolPop(atautoreleasepoolobj);&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">  void * atautoreleasepoolobj;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">&#125;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">int main(int argc, const char * argv[]) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">    &#x2F;* @autoreleasepool *&#x2F; &#123; __AtAutoreleasePool __autoreleasepool; &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">    return 0;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
+<p>可以看出<code>@autoreleasepool{}</code>会创建一个<code>__AtAutoreleasePool</code>类型的局部变量并包含在当前作用域，<code>__AtAutoreleasePool</code>构造和析构时分别调用了两个方法，所以简化过程如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">void *context &#x3D; objc_autoreleasePoolPush()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 对象调用 autorelease 装入自动释放池</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">objc_autoreleasePoolPop(context)</span></pre></td></tr></table></figure>
+<p>可以猜测 <code>push</code> 和 <code>pop</code> 操作是实现自动释放的关键。</p>
+<h1 id="二、AutoreleasePoolPage-内存分布"><a href="#二、AutoreleasePoolPage-内存分布" class="headerlink" title="二、AutoreleasePoolPage 内存分布"></a>二、AutoreleasePoolPage 内存分布</h1><p><a href="https://developer.apple.com/documentation/foundation/nsautoreleasepool#//apple_ref/doc/uid/TP40003623" target="_blank" rel="noopener">Apple官方文档</a>中提到了，主线程以及非显式创建的线程（比如 GCD）都会有一个 event loop (RunLoop 就是具体实现)，在 loop 的每一个循环周期的开始和结束会分别调用自动释放池的 push 和 pop 方法，由此来实现自动的内存管理。</p>
+<p>objc_autoreleasePoolPush()和objc_autoreleasePoolPop(…)实际上会调用到AutoreleasePoolPage类的push()和pop()方法，先看一下这个类的数据结构</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">class AutoreleasePoolPage &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    ...</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    magic_t const magic;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    id *next;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    pthread_t const thread;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    AutoreleasePoolPage * const parent;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    AutoreleasePoolPage *child;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">    static void * operator new(size_t size) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">        return malloc_zone_memalign(malloc_default_zone(), SIZE, SIZE);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">    id * begin() &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">        return (id *) ((uint8_t *)this+sizeof(*this));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">    id * end() &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">        return (id *) ((uint8_t *)this+SIZE);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">    &#125; </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">    ...</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
+<ul>
+<li><code>parent</code>和<code>child</code>正是指向前驱和后继指针，自动释放池就是一个以<code>AutoreleasePoolPage</code>为节点的双向链表（后文验证）。</li>
+<li><code>thread</code>是指当前 page 所对应的线程。</li>
+<li><code>magic</code>用于校验内存是否损坏。</li>
+<li><code>next</code>指向当前可插入对象的地址。</li>
+</ul>
+<h2 id="内存对齐"><a href="#内存对齐" class="headerlink" title="内存对齐"></a>内存对齐</h2><p>重写了<code>new</code>运算符，使用了<code>malloc_zone_memalign(...)</code>进行内存分配：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">extern void *malloc_zone_memalign(malloc_zone_t *zone, size_t alignment, size_t size) ;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    &#x2F;* </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">     * Allocates a new pointer of size size whose address is an exact multiple of alignment.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">     * alignment must be a power of two and at least as large as sizeof(void *).</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">     * zone must be non-NULL.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">     *&#x2F;</span></pre></td></tr></table></figure>
+
+<p>注释说得很清楚了，这个方法以<code>alignment</code>对齐的地址分配<code>size</code>的内存空间。调用时两个参数都使用了<code>SIZE</code>宏，实际上就是虚拟内存页的大小：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">#define I386_PGBYTES            4096</span></pre></td></tr></table></figure>
+
+<p>一个 page 的内存空间设置过小会导致更多的开辟空间操作降低效率，大量的parent/child指针变量也会占用可观的内存；空间设置过大可能会导致一个 page 的利用率低浪费过多内存。设置为 4096 是比较考究的，在保证内存对齐的情况下最大化利用空间避免内存碎片。这么做过后 page 的地址总是 4096 的整数倍，可以让某些运算更便捷（比如后文会说的通过指针地址寻找对应的 page）。</p>
+<h2 id="begin-与-end"><a href="#begin-与-end" class="headerlink" title="begin() 与 end()"></a>begin() 与 end()</h2><p><code>AutoreleasePoolPage</code>本身的大小远不及 4096，而超出的空间正是用来存放“期望被自动管理的对象”。<code>begin()</code>和<code>end()</code>方法标记了这个范围。</p>
+<p><code>sizeof(*this)</code>表示<code>AutoreleasePoolPage</code>本身的大小，那么<code>(uint8_t *)this+sizeof(*this)</code>就是最低地址，<code>(uint8_t *)this+SIZE</code>就是最高地址。逐个插入对象时，<code>next</code>指针从<code>begin()</code>到<code>end()</code>逐个移动，后面的<code>full()</code>方法就是指<code>next == end()</code>，<code>empty()</code>就是指<code>next == begin()</code>。</p>
+<p>值得注意的是<code>next/end()/begin()</code>等都是<code>id *</code>类型的，即指向指针的指针，进行 +1 -1 运算时移动的是一个<code>id</code>大小的距离。</p>
+<h1 id="三、push-逻辑"><a href="#三、push-逻辑" class="headerlink" title="三、push 逻辑"></a>三、push 逻辑</h1><p><code>push()</code>方法会调用<code>autoreleaseFast(POOL_BOUNDARY)</code>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">static inline id *autoreleaseFast(id obj)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    AutoreleasePoolPage *page &#x3D; hotPage();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    if (page &amp;&amp; !page-&gt;full()) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">        return page-&gt;add(obj);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    &#125; else if (page) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">        return autoreleaseFullPage(obj, page);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">    &#125; else &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">        return autoreleaseNoPage(obj);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
+<p>hotPage 指的是当前可插入对象的 page，放到后面一点分析，先来看插入对象的逻辑，分三种情况：</p>
+<h2 id="1、当-page-存在且没满时，直接添加对象："><a href="#1、当-page-存在且没满时，直接添加对象：" class="headerlink" title="1、当 page 存在且没满时，直接添加对象："></a>1、当 page 存在且没满时，直接添加对象：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">id *add(id obj)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    assert(!full());</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    unprotect();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    id *ret &#x3D; next;  &#x2F;&#x2F; faster than &#96;return next-1&#96; because of aliasing</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    *next++ &#x3D; obj;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    protect();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">    return ret;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
+<p><code>unprotect()/protect()</code>内部使用了<code>int mprotect(void *a, size_t b, int c)</code>，设置内存起点a长度b的内存区域为c类型的访问限制：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">    inline void protect() &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">#if PROTECT_AUTORELEASEPOOL</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">        mprotect(this, SIZE, PROT_READ);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">        check();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">#endif</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    inline void unprotect() &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">#if PROTECT_AUTORELEASEPOOL</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">        check();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">        mprotect(this, SIZE, PROT_READ | PROT_WRITE);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">#endif</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr></table></figure>
+
+<p><code>unprotect()</code>设置为可读可写，<code>protect()</code>设置为只读，所以这里的目的是保证 page 写安全。不过有<code>#define PROTECT_AUTORELEASEPOOL</code> 0定义说明目前版本还没有开放这个保护功能。</p>
+<h2 id="2、当-page-存在且满了时，拓展-page-节点并添加对象："><a href="#2、当-page-存在且满了时，拓展-page-节点并添加对象：" class="headerlink" title="2、当 page 存在且满了时，拓展 page 节点并添加对象："></a>2、当 page 存在且满了时，拓展 page 节点并添加对象：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">static __attribute__((noinline))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">id *autoreleaseFullPage(id obj, AutoreleasePoolPage *page)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">&#123;   ...</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    do &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">        if (page-&gt;child) page &#x3D; page-&gt;child;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">        else page &#x3D; new AutoreleasePoolPage(page);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    &#125; while (page-&gt;full());</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">    setHotPage(page);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">    return page-&gt;add(obj);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+<p>循环的逻辑：从 child 方向找到未满的 page，若找不到则创建一个新 page 拼接到链表尾部（AutoreleasePoolPage 构造方法会把传入的 page 参数作为 parent 前驱对象）。后面再设置最新的 page 为 hotpage 并将 obj 添加进 page。</p>
+<h2 id="3、当-page-不存在时，初始化一个"><a href="#3、当-page-不存在时，初始化一个" class="headerlink" title="3、当 page 不存在时，初始化一个"></a>3、当 page 不存在时，初始化一个</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">static __attribute__((noinline))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">id *autoreleaseNoPage(id obj) </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">&#123;   ...</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    AutoreleasePoolPage *page &#x3D; new AutoreleasePoolPage(nil);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    setHotPage(page);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    ...</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    return page-&gt;add(obj);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
+<p>这个方法核心就是创建第一个 page 然后加入线程局部存储。</p>
+<h2 id="hotPage"><a href="#hotPage" class="headerlink" title="hotPage"></a>hotPage</h2><p>从上面的<code>push()</code>方法分析可知，被自动管理的对象会不断插入双向链表从前到后第一个未满<code>page</code> ，<code>hotPage()</code>其实就是指向这个<code>page</code>，还有个<code>coldPage()</code>方法是根据<code>hotPage()</code>找到第一个 page。</p>
+<p>既然自动释放池是由<code>AutoreleasePoolPage</code>组成的双向链表，那这个链表该如何访问呢？可能常规的思路是创建一个全局变量来访问它，不过这里使用了另外一个方式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">static inline AutoreleasePoolPage *hotPage() </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    AutoreleasePoolPage *result &#x3D; (AutoreleasePoolPage *)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">        tls_get_direct(key);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    &#x2F;&#x2F; EMPTY_POOL_PLACEHOLDER 表示没有 page</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    if ((id *)result &#x3D;&#x3D; EMPTY_POOL_PLACEHOLDER) return nil;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    if (result) result-&gt;fastcheck();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">    return result;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">static inline void setHotPage(AutoreleasePoolPage *page) </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">    if (page) page-&gt;fastcheck();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">    tls_set_direct(key, (void *)page);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
+<p><code>tls_get_direct(...)</code>和<code>tls_set_direct(...)</code>内部就是使用线程的局部存储（TLS: Thread Local Storage）将 <code>page</code> 存储起来，这样可以避免维护额外的空间来记录尾部的 page。由此也验证了自动释放池与线程一一对应的关系。</p>
+<p>在 <code>YYKit</code> 中有一个使用广泛的技巧：将某个对象最后使用时放在异步线程，如果这个对象释放就（可能?）会在这个异步线程，从而降低主线程压力。实际上就是编译器插入 autorelease 代码将对象加入到异步线程的自动释放池，而如果异步线程的释放池先于主线程的释放池<code>pop()</code>而调用对象的<code>release()</code>方法，那么这个对象如果释放就会在异步线程。所以笔者认为这个优化并非绝对有效（这里衍生出一个问题：一个对象被多个自动释放池管理，若对象释放这些释放池怎么避免的野指针问题？）。</p>
+<h2 id="POOL-BOUNDARY"><a href="#POOL-BOUNDARY" class="headerlink" title="POOL_BOUNDARY"></a>POOL_BOUNDARY</h2><p><code>push()</code>方法调用<code>autoreleaseFast(POOL_BOUNDARY)</code>时传入的是一个 <code>POOL_BOUNDARY</code> 并非需要被管理的对象，它的定义如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">#   define POOL_BOUNDARY nil</span></pre></td></tr></table></figure>
+
+<p>在调用<code>autoreleaseFast(obj)</code>方法会返回指向obj指针的指针，它是一个<code>id *</code>类型，也就是说，这个返回值关心的只是<code>obj</code>指针的地址，而不是obj值的地址，<code>obj</code>指针的地址就是对应<code>AutoreleasePoolPage</code>对象内存中的某段区域。</p>
+<p>再看一下上层调用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">void *context &#x3D; objc_autoreleasePoolPush()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">...</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">objc_autoreleasePoolPop(context)</span></pre></td></tr></table></figure>
+
+<p>pop 时会将这个<code>obj</code>指针的地址传入进去。pop 的逻辑是把 hotPage 里面装的对象依次移除并发送 release 消息（后面会详细分析），当前 page 移除完了，继续移除 parent 节点内的对象，以此反复，而移除对象操作何时停止就是到这个<code>obj</code>指针的地址。</p>
+<p>所以，push 操作加入一个 POOL_BOUNDARY 实际上就是加一个边界，pop 操作时根据边界判断范围，这就是一个入栈与出栈的过程。</p>
+<h2 id="magic-校验"><a href="#magic-校验" class="headerlink" title="magic 校验"></a>magic 校验</h2><p>多次出现的<code>check()</code>方法如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">    void check(bool die &#x3D; true)  &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">        if (!magic.check() || !pthread_equal(thread, pthread_self())) busted(die);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    void fastcheck(bool die &#x3D; true)  &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;补充：#define CHECK_AUTORELEASEPOOL (DEBUG)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">#if CHECK_AUTORELEASEPOOL</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">        check(die);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">#else</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">        if (! magic.fastcheck()) busted(die);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">#endif</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr></table></figure>
+
+<p>可以看到，它们都调用了<code>magic</code>的 <code>check</code> 方法，在 <code>DEBUG</code> 时还会去检查当前线程是否与 page 的线程一致。</p>
+<p><code>magic</code>是<code>magic_t</code>类型的，这个结构体主要是有个<code>uint32_t m[4]</code>;数组，构造时内存直接会写为<code>0xA1A1A1A1 AUTORELEASE!</code>，然后<code>check()</code>逻辑就是判断构造时的值是否发生了改变，若发生改变说明这个 page 已经被破坏。</p>
+<h1 id="四、autorelease-逻辑"><a href="#四、autorelease-逻辑" class="headerlink" title="四、autorelease 逻辑"></a>四、autorelease 逻辑</h1><p>上层对象调用 <code>autorelease</code> 方法会调用到<code>AutoreleasePoolPage</code>的以下方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">static inline id autorelease(id obj)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    assert(obj);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    assert(!obj-&gt;isTaggedPointer());</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    id *dest __unused &#x3D; autoreleaseFast(obj);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    assert(!dest  ||  dest &#x3D;&#x3D; EMPTY_POOL_PLACEHOLDER  ||  *dest &#x3D;&#x3D; obj);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    return obj;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
+<p>显然，最终还是会调用前面解析的<code>autoreleaseFast(...)</code>方法进行对象插入。由此也可以推断，在一个 <code>Thread</code> 没有 <code>Runloop</code> 自动执行自动释放池的 <code>push</code> 和 <code>pop</code> 时，对象进行 <code>autorelease</code> 时若发现没有自动释放池节点会自动创建 page 并加入线程局部存储（参考前面的<code>autoreleaseNoPage(...)</code>方法分析）。</p>
+<h1 id="五、pop-逻辑"><a href="#五、pop-逻辑" class="headerlink" title="五、pop 逻辑"></a>五、pop 逻辑</h1><p><code>objc_autoreleasePoolPop(context)</code>的<code>context</code>参数是<code>objc_autoreleasePoolPush()</code>返回的，实际上就是<code>POOL_BOUNDARY</code>对应的在<code>AutoreleasePoolPage</code>中的地址。最终会调用到<code>pop()</code>方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">static inline void pop(void *token) </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    AutoreleasePoolPage *page;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    id *stop;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    ...</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    &#x2F;&#x2F; 拿到 token 边界对应的 page</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    page &#x3D; pageForPointer(token);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">    stop &#x3D; (id *)token;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">    ...</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">    &#x2F;&#x2F; pop 内部对象直到 stop 边界</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">    page-&gt;releaseUntil(stop);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">    ...</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">    &#x2F;&#x2F; 删除空的 child 链表节点，如果当前页对象超过一半，保留下一个空节点</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">    if (page-&gt;lessThanHalfFull()) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">        page-&gt;child-&gt;kill();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">    else if (page-&gt;child-&gt;child) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">        page-&gt;child-&gt;child-&gt;kill();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
+<p><code>pop()</code>的逻辑应该很好理解了，<code>token</code>参数就是边界，下面分别分析步骤：</p>
+<h1 id="找到边界对应的-page"><a href="#找到边界对应的-page" class="headerlink" title="找到边界对应的 page"></a>找到边界对应的 page</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">static AutoreleasePoolPage *pageForPointer(const void *p) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    return pageForPointer((uintptr_t)p);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">static AutoreleasePoolPage *pageForPointer(uintptr_t p) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    AutoreleasePoolPage *result;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    uintptr_t offset &#x3D; p % SIZE;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    ....</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">    result &#x3D; (AutoreleasePoolPage *)(p - offset);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">    result-&gt;fastcheck();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">    return result;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
+<p>看上面个函数，<code>const void *p</code>是指针的指针，<code>((uintptr_t)p)</code>才表示<code>POOL_BOUNDARY</code>指针在对应 page 中的地址。</p>
+<p>看下面个函数，前面分析过内存对齐的处理，那么 <code>page</code> 的起始地址必然是 <code>SIZE</code> (也就是页大小 4096) 的倍数，那么<code>p % SIZE</code>就得到了这个<code>p</code>在 <code>page</code> 中的地址偏移，最后通过<code>p - offset</code>就拿到了 page 的起始地址，这个处理比较秀。</p>
+<p>移除被管理对象并发送 release 消息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">void releaseUntil(id *stop)  &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    while (this-&gt;next !&#x3D; stop) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">        AutoreleasePoolPage *page &#x3D; hotPage();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">        &#x2F;&#x2F; 如果当前 page 空了，指向 parent</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">        while (page-&gt;empty()) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">            page &#x3D; page-&gt;parent;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">            setHotPage(page);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">        &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">        &#x2F;&#x2F; 将即将要移除对象对应 page 中的内存置为 SCRIBBLE</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">        page-&gt;unprotect();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">        id obj &#x3D; *--page-&gt;next;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">        memset((void*)page-&gt;next, SCRIBBLE, sizeof(*page-&gt;next));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">        page-&gt;protect();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">        &#x2F;&#x2F; 调用对象的 release 方法</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">        if (obj !&#x3D; POOL_BOUNDARY) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">            objc_release(obj);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">        &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">    &#x2F;&#x2F; 把当前 page 设置 hotpage（调用时 this 就是对应期望释放边界的 page）</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">    setHotPage(this);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line">    ...</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
+<p>清除 child</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">void kill() &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    AutoreleasePoolPage *page &#x3D; this;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    while (page-&gt;child) page &#x3D; page-&gt;child;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    AutoreleasePoolPage *deathptr;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    do &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">        deathptr &#x3D; page;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">        page &#x3D; page-&gt;parent;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">        if (page) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">            page-&gt;unprotect();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">            page-&gt;child &#x3D; nil;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">            page-&gt;protect();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">        &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">        delete deathptr;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">    &#125; while (deathptr !&#x3D; this);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
+<p>这个逻辑一目了然了：找到当前 page 的 child 方向尾部 page，然后反向挨着释放并且把其 parent 节点的 child 指针置空。前面也说明了unprotect和protect内部并没有开启写入安全保护。</p>
+<h1 id="后语"><a href="#后语" class="headerlink" title="后语"></a>后语</h1><p>以上就是自动释放池大部分源码的分析了，这部分源码没有涉及汇编并且代码量比较少，所以看起来相对容易。多理解一些内存管理底层有利于理解各种上层特性、定位内存难题，也有助于写出更稳定的代码。并且在这个过程中，不可避免需要接触操作系统和编译原理相关知识，也算是能培养通识性能力。</p>
+<p>读源码远比记结论重要，遇到某些优秀的代码细节往往令人惊喜，不失为一种乐趣。</p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" target="_blank" rel="noopener" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>The world is as new as chess<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/img/alipay.jpg">
+                      <span class="reward-type">支付宝</span>
+                    </div>
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/img/wechat.jpg">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -214,30 +335,119 @@
 		</ul>
 	</div>
 
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/AFN//" class="article-tag-list-link color4">AFN</a>
-        		</li>
-      		
-		</ul>
-	</div>
+      
 
+      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" target="_blank" rel="noopener" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" target="_blank" rel="noopener" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;" target="_blank" rel="noopener"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2021/2021-04-29-19:07:17/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
   
   
-    </div></section>
+    <a href="/2021/2021-04-25-18:19:06/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">探索UI渲染卡顿治理方案</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" target="_blank" rel="noopener" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#一、-autoreleasepool-干了些什么"><span class="toc-number">2.</span> <span class="toc-text">一、@autoreleasepool {} 干了些什么</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#二、AutoreleasePoolPage-内存分布"><span class="toc-number">3.</span> <span class="toc-text">二、AutoreleasePoolPage 内存分布</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#内存对齐"><span class="toc-number">3.1.</span> <span class="toc-text">内存对齐</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#begin-与-end"><span class="toc-number">3.2.</span> <span class="toc-text">begin() 与 end()</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#三、push-逻辑"><span class="toc-number">4.</span> <span class="toc-text">三、push 逻辑</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1、当-page-存在且没满时，直接添加对象："><span class="toc-number">4.1.</span> <span class="toc-text">1、当 page 存在且没满时，直接添加对象：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2、当-page-存在且满了时，拓展-page-节点并添加对象："><span class="toc-number">4.2.</span> <span class="toc-text">2、当 page 存在且满了时，拓展 page 节点并添加对象：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3、当-page-不存在时，初始化一个"><span class="toc-number">4.3.</span> <span class="toc-text">3、当 page 不存在时，初始化一个</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#hotPage"><span class="toc-number">4.4.</span> <span class="toc-text">hotPage</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#POOL-BOUNDARY"><span class="toc-number">4.5.</span> <span class="toc-text">POOL_BOUNDARY</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#magic-校验"><span class="toc-number">4.6.</span> <span class="toc-text">magic 校验</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#四、autorelease-逻辑"><span class="toc-number">5.</span> <span class="toc-text">四、autorelease 逻辑</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#五、pop-逻辑"><span class="toc-number">6.</span> <span class="toc-text">五、pop 逻辑</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#找到边界对应的-page"><span class="toc-number">7.</span> <span class="toc-text">找到边界对应的 page</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#后语"><span class="toc-number">8.</span> <span class="toc-text">后语</span></a></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -260,8 +470,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
@@ -346,11 +556,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color3">Flutter</a>
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color5">设计原则</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color5">设计原则</a>
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color3">Flutter</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -358,11 +568,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color5">直播模块</a>
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color4">组件化</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color4">组件化</a>
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color5">直播模块</a>
               </li>
              
               <li class="article-tag-list-item">
